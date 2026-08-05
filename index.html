@@ -101,10 +101,23 @@
         {label:'الجمعة',title:'تعافٍ نشط',goal:'التعافي والاستعداد للأسبوع',meta:'45 دقيقة • Strain 4–7',items:[['Walking','45 دقيقة','https://www.youtube.com/results?search_query=active+recovery+walking'],['Stretching','10 دقائق','https://www.youtube.com/results?search_query=full+body+stretching'],['Breathing','5 دقائق','https://www.youtube.com/results?search_query=breathing+exercise+recovery']]}
       ];
       var habitState=[];var workoutState=[];var active=0;var currentHabit=-1;var i;
+      var storageKey='mazenOSProgressV1';
       for(i=0;i<habits.length;i++){habitState.push(false)}
       for(i=0;i<days.length;i++){workoutState.push([]);var j;for(j=0;j<days[i].items.length;j++){workoutState[i].push(false)}}
+      try{
+        var savedState=JSON.parse(localStorage.getItem(storageKey));
+        if(savedState){
+          if(Array.isArray(savedState.habitState)&&savedState.habitState.length===habitState.length){habitState=savedState.habitState.map(Boolean)}
+          if(Array.isArray(savedState.workoutState)&&savedState.workoutState.length===workoutState.length){
+            for(i=0;i<workoutState.length;i++){
+              if(Array.isArray(savedState.workoutState[i])&&savedState.workoutState[i].length===workoutState[i].length){workoutState[i]=savedState.workoutState[i].map(Boolean)}
+            }
+          }
+        }
+      }catch(storageError){}
 
       function el(id){return root.querySelector('#'+id)}
+      function saveState(){try{localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,workoutState:workoutState}))}catch(storageError){}}
       function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
       function developmentSession(now){
         var day=now.getDay();
@@ -151,7 +164,7 @@
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
-          check.addEventListener('change',function(){habitState[index]=check.checked;renderHabits()});
+          check.addEventListener('change',function(){habitState[index]=check.checked;saveState();renderHabits();updateDashboard(new Date(),developmentSession(new Date()))});
           row.appendChild(check);row.appendChild(label);row.appendChild(time);box.appendChild(row);
         });
         el('mz-life-label').textContent=done+' من '+habits.length+' عادات';el('mz-life-bar').style.width=Math.round(done/habits.length*100)+'%';
@@ -166,7 +179,7 @@
           var row=document.createElement('div');row.className='mz-row';var check=document.createElement('input');check.type='checkbox';check.checked=workoutState[active][index];
           var label=document.createElement('label');label.innerHTML='<strong>'+item[0]+'</strong><small>'+item[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var link=document.createElement('a');link.href=item[2];link.target='_blank';link.rel='noopener noreferrer';link.textContent='🎥 الفيديو';
-          check.addEventListener('change',function(){workoutState[active][index]=check.checked;renderTraining()});row.appendChild(check);row.appendChild(label);row.appendChild(link);list.appendChild(row);
+          check.addEventListener('change',function(){workoutState[active][index]=check.checked;saveState();renderTraining()});row.appendChild(check);row.appendChild(label);row.appendChild(link);list.appendChild(row);
         });
         el('mz-work-label').textContent=done+' من '+day.items.length+' تمارين';el('mz-work-bar').style.width=Math.round(done/day.items.length*100)+'%';
       }
@@ -175,8 +188,8 @@
       el('mz-training-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-life-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-training-panel').className='';el('mz-life-panel').className='mz-card mz-hidden';renderTraining()});
       el('mz-open-today').addEventListener('click',function(){el('mz-training-tab').click()});
       root.querySelectorAll('[data-mz]').forEach(function(b){b.addEventListener('click',function(){root.querySelectorAll('[data-mz]').forEach(function(x){x.className=''});b.className='active';var t=b.getAttribute('data-mz');el('mz-advice').textContent=t==='g'?'نفّذ الجلسة كاملة.':t==='y'?'نفّذ الخطة دون إضافة حجم أو شدة.':'خفّض الحجم، وتجنب HIIT وSparring.'})});
-      el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});renderHabits()});
-      el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});renderTraining()});
+      el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();updateDashboard(new Date(),developmentSession(new Date()))});
+      el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});saveState();renderTraining()});
       var now=new Date();var names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];var dayMap=[1,2,3,4,5,6,0];active=dayMap[now.getDay()];el('mz-date').textContent=names[now.getDay()]+'، '+now.getDate()+'/'+(now.getMonth()+1);
       updateSmartFlow();renderTraining();setInterval(updateSmartFlow,60000);
     })();
