@@ -58,7 +58,7 @@
         <div><h3 id="mz-greeting">صباح الخير يا مازن</h3><p>المهمة الحالية: <strong id="mz-current-task">—</strong></p><p>المهمة التالية: <span id="mz-next-task">—</span></p></div>
         <button type="button" id="mz-open-today">فتح تمرين اليوم</button>
       </div>
-      <strong id="mz-life-label">0 من 10 عادات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div>
+      <strong id="mz-life-label">0 من 10 عادات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div><p id="mz-save-status" style="margin:-6px 0 14px;color:#657083;font-size:13px">يتم الحفظ تلقائيًا على هذا الجهاز</p>
       <div class="mz-list" id="mz-habits"></div>
       <div class="mz-actions"><button type="button" id="mz-reset-life">إعادة ضبط اليوم</button></div>
     </section>
@@ -101,7 +101,9 @@
         {label:'الجمعة',title:'تعافٍ نشط',goal:'التعافي والاستعداد للأسبوع',meta:'45 دقيقة • Strain 4–7',items:[['Walking','45 دقيقة','https://www.youtube.com/results?search_query=active+recovery+walking'],['Stretching','10 دقائق','https://www.youtube.com/results?search_query=full+body+stretching'],['Breathing','5 دقائق','https://www.youtube.com/results?search_query=breathing+exercise+recovery']]}
       ];
       var habitState=[];var workoutState=[];var active=0;var currentHabit=-1;var i;
-      var storageKey='mazenOSProgressV1';
+      function localDateKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
+      var todayKey=localDateKey(new Date());
+      var storageKey='mazenOSProgressV2:'+todayKey;
       for(i=0;i<habits.length;i++){habitState.push(false)}
       for(i=0;i<days.length;i++){workoutState.push([]);var j;for(j=0;j<days[i].items.length;j++){workoutState[i].push(false)}}
       try{
@@ -117,7 +119,20 @@
       }catch(storageError){}
 
       function el(id){return root.querySelector('#'+id)}
-      function saveState(){try{localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,workoutState:workoutState}))}catch(storageError){}}
+      function saveState(){
+        try{
+          localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,workoutState:workoutState,updatedAt:Date.now()}));
+          el('mz-save-status').textContent='تم الحفظ الآن';
+          return true;
+        }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
+      }
+      function refreshProgress(){
+        var completed=0;for(var h=0;h<habitState.length;h++){if(habitState[h]){completed++}}
+        var percent=Math.round(completed/habitState.length*100);
+        el('mz-life-label').textContent=completed+' من '+habits.length+' عادات';
+        el('mz-life-bar').style.width=percent+'%';
+        el('mz-dashboard-progress').textContent=percent+'%';
+      }
       function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
       function developmentSession(now){
         var day=now.getDay();
@@ -145,7 +160,7 @@
         el('mz-dashboard-workout-meta').textContent=days[active].meta;
         el('mz-dashboard-development').textContent=session[0];
         el('mz-dashboard-development-note').textContent=session[1];
-        el('mz-dashboard-progress').textContent=Math.round(completed/habitState.length*100)+'%';
+        refreshProgress();
         el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن';
         var nextIndex=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:0;
         el('mz-dashboard-next').textContent='التالي: '+habits[nextIndex][0]+' • '+habits[nextIndex][2];
@@ -164,10 +179,16 @@
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
-          check.addEventListener('change',function(){habitState[index]=check.checked;saveState();renderHabits();updateDashboard(new Date(),developmentSession(new Date()))});
+          check.addEventListener('change',function(){
+            habitState[index]=check.checked;
+            saveState();
+            renderHabits();
+            refreshProgress();
+            updateDashboard(new Date(),developmentSession(new Date()));
+          });
           row.appendChild(check);row.appendChild(label);row.appendChild(time);box.appendChild(row);
         });
-        el('mz-life-label').textContent=done+' من '+habits.length+' عادات';el('mz-life-bar').style.width=Math.round(done/habits.length*100)+'%';
+        refreshProgress();
       }
       function renderDays(){
         var nav=el('mz-days');nav.innerHTML='';days.forEach(function(d,index){var b=document.createElement('button');b.type='button';b.textContent=d.label;b.className=index===active?'active':'';b.addEventListener('click',function(){active=index;renderTraining()});nav.appendChild(b)});
@@ -188,10 +209,10 @@
       el('mz-training-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-life-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-training-panel').className='';el('mz-life-panel').className='mz-card mz-hidden';renderTraining()});
       el('mz-open-today').addEventListener('click',function(){el('mz-training-tab').click()});
       root.querySelectorAll('[data-mz]').forEach(function(b){b.addEventListener('click',function(){root.querySelectorAll('[data-mz]').forEach(function(x){x.className=''});b.className='active';var t=b.getAttribute('data-mz');el('mz-advice').textContent=t==='g'?'نفّذ الجلسة كاملة.':t==='y'?'نفّذ الخطة دون إضافة حجم أو شدة.':'خفّض الحجم، وتجنب HIIT وSparring.'})});
-      el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();updateDashboard(new Date(),developmentSession(new Date()))});
+      el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});
       el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});saveState();renderTraining()});
       var now=new Date();var names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];var dayMap=[1,2,3,4,5,6,0];active=dayMap[now.getDay()];el('mz-date').textContent=names[now.getDay()]+'، '+now.getDate()+'/'+(now.getMonth()+1);
-      updateSmartFlow();renderTraining();setInterval(updateSmartFlow,60000);
+      updateSmartFlow();renderTraining();refreshProgress();setInterval(updateSmartFlow,60000);
     })();
   </script>
 </div></body>
