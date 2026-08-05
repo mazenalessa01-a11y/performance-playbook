@@ -1,66 +1,9 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#12294b">
-  <title>Performance Playbook</title>
-  <style>
-    :root{color-scheme:light dark;--bg:#f7f4ee;--text:#172033;--panel:#fff;--border:#e2e4e9;--muted:#657083;--card:#fbfbfc;--chip:#eef1f5}
-    @media(prefers-color-scheme:dark){:root{--bg:#101827;--text:#f7f8fb;--panel:#172235;--border:#344158;--muted:#b7c0cf;--card:#1c293d;--chip:#243249}}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
-    #app{padding:18px;min-height:100vh}.shell{max-width:980px;margin:auto}
-    .hero{background:linear-gradient(135deg,#12294b,#1f6a67);color:#fff;border-radius:22px;padding:22px;margin-bottom:16px}
-    .hero h1{margin:0 0 6px;font-size:clamp(25px,5vw,38px)}.hero p{margin:0;opacity:.85}
-    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:15px;padding:12px}.stat strong{display:block;font-size:23px}
-    .days{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}.day{border:1px solid var(--border);background:var(--panel);color:inherit;border-radius:14px;padding:10px 14px;min-width:82px;min-height:48px;font-weight:700;cursor:pointer}.day.active{background:#d9a52e;color:#152039;border-color:#d9a52e}
-    .panel{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:18px}.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.head h2{margin:0}.meta{display:flex;gap:8px;flex-wrap:wrap}.chip{border-radius:999px;padding:7px 10px;background:var(--chip);font-size:14px}
-    .whoop{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.whoop button{min-height:44px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:inherit;padding:9px 12px;cursor:pointer}.whoop button.active{outline:3px solid #d9a52e}
-    .note{padding:12px;border-radius:13px;background:#eaf5f0;color:#245644}@media(prefers-color-scheme:dark){.note{background:#19352f;color:#bce8d8}}
-    .progress{height:12px;border-radius:999px;background:var(--border);overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a52e,#35a47c)}
-    .list{display:grid;gap:10px;margin-top:16px}.exercise{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:15px;padding:12px;background:var(--card)}.exercise input{width:22px;height:22px;accent-color:#35a47c}.exercise strong{display:block}.exercise small{color:var(--muted)}.exercise a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 11px;border-radius:11px;text-decoration:none;background:#173a63;color:#fff;font-size:14px}.done{opacity:.58;text-decoration:line-through}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.actions button{min-height:44px;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}.reset-day{background:#d9a52e;color:#172033}.reset-all{background:var(--chip);color:inherit}
-    @media(max-width:560px){.stats{grid-template-columns:1fr}.exercise{grid-template-columns:auto 1fr}.exercise a{grid-column:2;width:max-content}.panel{padding:14px}}
-  </style>
-</head>
-<body>
-<div id="app"><div class="shell">
-  <section class="hero"><h1>🏋️ Performance Playbook</h1><p>تدرّب بذكاء • تعافَ بشكل أفضل • تحسّن كل أسبوع</p>
-    <div class="stats"><div class="stat"><span>إنجاز اليوم</span><strong id="dayPercent">0%</strong></div><div class="stat"><span>إنجاز الأسبوع</span><strong id="weekPercent">0%</strong></div><div class="stat"><span>الجلسات المكتملة</span><strong id="completedDays">0 / 7</strong></div></div>
-  </section>
-  <nav class="days" id="dayTabs"></nav>
-  <section class="panel">
-    <div class="head"><div><h2 id="dayTitle"></h2><p id="dayGoal"></p></div><div class="meta"><span class="chip" id="duration"></span><span class="chip" id="strain"></span></div></div>
-    <div class="whoop"><button data-r="g">🟢 تعافٍ مرتفع</button><button data-r="y">🟡 تعافٍ متوسط</button><button data-r="r">🔴 تعافٍ منخفض</button></div>
-    <div class="note" id="advice">اختر حالة التعافي لتحديد شدة الجلسة.</div>
-    <div style="margin-top:16px"><strong id="progressLabel"></strong><div class="progress"><span id="bar"></span></div></div>
-    <div class="list" id="exerciseList"></div>
-    <div class="actions"><button class="reset-day" id="resetDay">إعادة ضبط اليوم</button><button class="reset-all" id="resetAll">إعادة ضبط الأسبوع</button></div>
-  </section>
-</div></div>
-<script>
-const days=[
-{key:'sat',label:'السبت',title:'Lower Body Strength',goal:'بناء القوة وتحسين الأداء في الملاكمة',duration:'75 دقيقة',strain:'Strain 12–14',ex:[
-['Hip Mobility','5 دقائق','https://www.youtube.com/results?search_query=hip+mobility+routine'],['Leg Swings','2 × 10 لكل رجل','https://www.youtube.com/results?search_query=leg+swings+warm+up'],['Bodyweight Squat','2 × 12','https://www.youtube.com/results?search_query=bodyweight+squat+technique'],['Back Squat','4 × 5 • RPE 8','https://www.youtube.com/watch?v=dW5-C1fsMjk'],['Romanian Deadlift','3 × 8','https://www.youtube.com/watch?v=SE-2Y-3a1pY'],['Bulgarian Split Squat','3 × 10 لكل رجل','https://www.youtube.com/watch?v=2C-uNgKwPLE'],['Walking Lunges','3 × 12','https://www.youtube.com/watch?v=vni4lElTvsY'],['Front Plank','3 × 45 ثانية','https://www.youtube.com/watch?v=pSHjTRCQxIw'],['Side Plank','3 × 30 ثانية','https://www.youtube.com/watch?v=K2VljzCC16g'],['Pallof Press','3 × 12','https://www.youtube.com/results?search_query=pallof+press+tutorial'],['Zone 2','20 دقيقة','https://www.youtube.com/results?search_query=peter+attia+zone+2']]},
-{key:'sun',label:'الأحد',title:'Boxing Technique',goal:'تطوير المهارة والدقة والدفاع',duration:'75 دقيقة',strain:'Strain 14–16',ex:[['Jump Rope','5 دقائق','https://www.youtube.com/results?search_query=FightTips+jump+rope'],['Dynamic Stretch','5 دقائق','https://www.youtube.com/results?search_query=boxing+dynamic+warmup'],['Footwork','5 جولات','https://www.youtube.com/results?search_query=Precision+Striking+boxing+footwork'],['Shadow Boxing','3 جولات','https://www.youtube.com/results?search_query=Precision+Striking+shadow+boxing'],['Mitt Work','5 جولات','https://www.youtube.com/results?search_query=boxing+mitt+work+tutorial'],['Heavy Bag','6 جولات','https://www.youtube.com/results?search_query=FightTips+heavy+bag'],['Defense Drills','3 جولات','https://www.youtube.com/results?search_query=FightTips+boxing+defense'],['Light Sparring','4 جولات','https://www.youtube.com/results?search_query=FightTips+light+sparring']]},
-{key:'mon',label:'الإثنين',title:'Upper Body Strength',goal:'زيادة القوة الوظيفية وثبات الكتفين والجذع',duration:'75 دقيقة',strain:'Strain 12–14',ex:[['Bench Press','4 × 5','https://www.youtube.com/results?search_query=Jeff+Nippard+bench+press'],['Pull-Ups','4 مجموعات','https://www.youtube.com/results?search_query=Jeff+Nippard+pull+ups'],['Overhead Press','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+overhead+press'],['Barbell Row','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+barbell+row'],['Face Pull','3 × 15','https://www.youtube.com/results?search_query=face+pull+proper+form'],['Farmer Carry','3 × 30 متر','https://www.youtube.com/results?search_query=farmer+carry+technique'],['Core','3 مجموعات','https://www.youtube.com/results?search_query=boxing+core+workout']]},
-{key:'tue',label:'الثلاثاء',title:'Boxing Performance',goal:'رفع اللياقة القتالية والتحمل تحت الضغط',duration:'75 دقيقة',strain:'Strain 15–17',ex:[['Warm-up','10 دقائق','https://www.youtube.com/results?search_query=boxing+warmup'],['Footwork','4 جولات','https://www.youtube.com/results?search_query=boxing+footwork+drills'],['Heavy Bag','8 جولات','https://www.youtube.com/results?search_query=boxing+heavy+bag+conditioning'],['HIIT','6–8 فترات','https://www.youtube.com/results?search_query=boxing+HIIT+workout'],['Sparring','حسب التعافي','https://www.youtube.com/results?search_query=boxing+sparring+fundamentals'],['Defense','3 جولات','https://www.youtube.com/results?search_query=boxing+defense+drills'],['Cool Down','10 دقائق','https://www.youtube.com/results?search_query=boxing+cool+down']]},
-{key:'wed',label:'الأربعاء',title:'Recovery & Mobility',goal:'تسريع الاستشفاء وتحسين حركة المفاصل',duration:'60 دقيقة',strain:'Strain 8–10',ex:[['Zone 2','30 دقيقة','https://www.youtube.com/results?search_query=peter+attia+zone+2'],['Foam Roller','10 دقائق','https://www.youtube.com/results?search_query=full+body+foam+rolling'],['Hip Mobility','8 دقائق','https://www.youtube.com/results?search_query=hip+mobility+routine'],['Shoulder Mobility','7 دقائق','https://www.youtube.com/results?search_query=shoulder+mobility+routine'],['Stretching','5 دقائق','https://www.youtube.com/results?search_query=full+body+stretching']]},
-{key:'thu',label:'الخميس',title:'Boxing Speed',goal:'تطوير السرعة والانفجار وردة الفعل',duration:'75 دقيقة',strain:'Strain 13–15',ex:[['Ladder Drills','10 دقائق','https://www.youtube.com/results?search_query=boxing+ladder+drills'],['Plyometrics','3–4 تمارين','https://www.youtube.com/results?search_query=boxing+plyometrics'],['Speed Bag','4 جولات','https://www.youtube.com/results?search_query=FightTips+speed+bag'],['Double-End Bag','4 جولات','https://www.youtube.com/results?search_query=double+end+bag+tutorial'],['Shadow Boxing','3 جولات سرعة','https://www.youtube.com/results?search_query=Precision+Striking+shadow+boxing'],['Heavy Bag Speed','5 جولات','https://www.youtube.com/results?search_query=boxing+speed+heavy+bag']]},
-{key:'fri',label:'الجمعة',title:'Active Recovery',goal:'التعافي الكامل والاستعداد للأسبوع التالي',duration:'45 دقيقة',strain:'Strain 4–7',ex:[['Walking','45 دقيقة','https://www.youtube.com/results?search_query=active+recovery+walking'],['Stretching','10 دقائق','https://www.youtube.com/results?search_query=full+body+stretching'],['Breathing','5 دقائق','https://www.youtube.com/results?search_query=breathing+exercise+recovery'],['Sauna','اختياري','https://www.youtube.com/results?search_query=sauna+recovery+guidelines']]}];
-const key='performancePlaybookStateV1';let state={};days.forEach(d=>state[d.key]=d.ex.map(()=>false));
-try{const s=JSON.parse(localStorage.getItem(key));if(s)days.forEach(d=>{if(Array.isArray(s[d.key])&&s[d.key].length===d.ex.length)state[d.key]=s[d.key].map(Boolean)})}catch(e){}
-let active=days[0];const $=s=>document.querySelector(s);
-function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch(e){}}
-function render(){
- $('#dayTabs').innerHTML='';days.forEach(d=>{const b=document.createElement('button');b.className='day'+(d.key===active.key?' active':'');b.textContent=d.label;b.onclick=()=>{active=d;render()};$('#dayTabs').appendChild(b)});
- $('#dayTitle').textContent=active.label+' │ '+active.title;$('#dayGoal').textContent=active.goal;$('#duration').textContent='⏱️ '+active.duration;$('#strain').textContent='❤️ '+active.strain;
- $('#exerciseList').innerHTML='';active.ex.forEach((e,i)=>{const row=document.createElement('div');row.className='exercise';const c=document.createElement('input');c.type='checkbox';c.checked=state[active.key][i];const l=document.createElement('label');l.innerHTML='<strong>'+e[0]+'</strong><small>'+e[1]+'</small>';if(c.checked)l.className='done';const a=document.createElement('a');a.href=e[2];a.target='_blank';a.rel='noopener';a.textContent='🎥 الفيديو';c.onchange=()=>{state[active.key][i]=c.checked;save();render()};row.append(c,l,a);$('#exerciseList').appendChild(row)});
- const cur=state[active.key],done=cur.filter(Boolean).length,pct=Math.round(done/cur.length*100);const total=days.reduce((n,d)=>n+d.ex.length,0),all=days.reduce((n,d)=>n+state[d.key].filter(Boolean).length,0),week=Math.round(all/total*100),completed=days.filter(d=>state[d.key].every(Boolean)).length;
- $('#dayPercent').textContent=pct+'%';$('#weekPercent').textContent=week+'%';$('#completedDays').textContent=completed+' / 7';$('#progressLabel').textContent=done+' من '+cur.length+' تمارين';$('#bar').style.width=pct+'%';
-}
-document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#advice').textContent={g:'نفّذ الجلسة كاملة، ويمكن زيادة بسيطة إذا كان الأداء ممتازًا.',y:'نفّذ الخطة الأساسية دون إضافة حجم أو شدة.',r:'احذف HIIT وSparring، وخفّض الحجم أو استبدل الجلسة بـ Zone 2 وMobility.'}[b.dataset.r]});
-$('#resetDay').onclick=()=>{state[active.key]=state[active.key].map(()=>false);save();render()};$('#resetAll').onclick=()=>{days.forEach(d=>state[d.key]=state[d.key].map(()=>false));save();render()};render();
-</script>
-</body>
-</html>
+performance-playbook/
+│
+├── index.html
+├── style.css
+├── app.js
+├── data.js
+├── assets/
+│   ├── icons/
+│   └── images/
