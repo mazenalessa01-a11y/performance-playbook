@@ -1,0 +1,387 @@
+<div id="maz-os" dir="rtl">
+  <style>
+    #maz-os{background:#f7f4ee;color:#172033;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:16px;min-height:100%;}
+    #maz-os *{box-sizing:border-box}
+    .mz-wrap{max-width:900px;margin:auto}
+    .mz-hero{background:linear-gradient(135deg,#12294b,#1f6a67);color:#fff;border-radius:20px;padding:20px;margin-bottom:14px}
+    .mz-hero h1{margin:0 0 6px;font-size:32px}.mz-hero p{margin:0;opacity:.88}
+    .mz-tabs,.mz-days{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}
+    .mz-tabs button,.mz-days button{min-height:44px;border:1px solid #d9dde5;background:#fff;color:#172033;border-radius:12px;padding:9px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+    .mz-tabs button.active,.mz-days button.active{background:#d9a52e;border-color:#d9a52e}
+    .mz-card{background:#fff;border:1px solid #e2e4e9;border-radius:18px;padding:16px}
+    .mz-smart{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-bottom:14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#eef6ff,#edf7f2);border:1px solid #d9e5e1}
+    .mz-smart h3{margin:0 0 5px;font-size:20px}.mz-smart p{margin:3px 0;color:#516071}.mz-smart strong{color:#173a63}.mz-smart button{min-height:44px;border:0;border-radius:11px;padding:9px 13px;background:#173a63;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+    .mz-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+    .mz-head h2{margin:0}.mz-chip{background:#eef1f5;border-radius:999px;padding:7px 10px;font-size:14px}
+    .mz-progress{height:12px;background:#e5e8ee;border-radius:999px;overflow:hidden;margin:10px 0 16px}.mz-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a52e,#35a47c)}
+    .mz-list{display:grid;gap:10px}.mz-row{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;border:1px solid #e2e4e9;border-radius:14px;padding:12px;background:#fbfbfc}
+    .mz-row input{width:22px;height:22px;accent-color:#35a47c}.mz-row strong{display:block}.mz-row small{color:#657083}.mz-row time{font-size:13px;font-weight:700;color:#b27c00;white-space:nowrap;direction:rtl;unicode-bidi:isolate}
+    .mz-row.mz-current{border-color:#d9a52e;background:#fff8e5;box-shadow:0 0 0 2px rgba(217,165,46,.12)}
+    .mz-row a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border-radius:10px;background:#173a63;color:#fff;text-decoration:none;white-space:nowrap}
+    .mz-done{opacity:.55;text-decoration:line-through}.mz-hidden{display:none}.mz-note{margin:12px 0;padding:11px;border-radius:12px;background:#edf7f2;color:#245644}.mz-whoop{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mz-whoop button{min-height:42px;border:1px solid #d9dde5;background:#fff;border-radius:11px;padding:8px 10px;cursor:pointer}.mz-whoop button.active{outline:3px solid #d9a52e}
+    .mz-actions{margin-top:14px}.mz-actions button{min-height:44px;border:0;border-radius:11px;padding:9px 13px;background:#d9a52e;color:#172033;font-weight:700;cursor:pointer}
+    .mz-dashboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .mz-dash-card{background:#fff;border:1px solid #e2e4e9;border-radius:16px;padding:15px}
+    .mz-dash-card h3{margin:0 0 8px}.mz-dash-card p{margin:4px 0;color:#516071}.mz-dash-value{font-size:24px;font-weight:800;color:#173a63}
+    .mz-dash-wide{grid-column:1/-1}
+    .mz-week{margin-top:14px;padding:15px;border:1px solid #e2e4e9;border-radius:16px;background:#fbfbfc}
+    .mz-week-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+    .mz-week-head h3{margin:0}.mz-week-score{font-size:22px;font-weight:800;color:#173a63}
+    .mz-week-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+    .mz-week-day{padding:10px 6px;border-radius:12px;background:#fff;border:1px solid #e2e4e9;text-align:center;cursor:pointer;color:#172033;font:inherit;width:100%;transition:.2s ease}
+    .mz-week-day:hover{transform:translateY(-1px)}.mz-week-day.active{box-shadow:0 0 0 2px rgba(23,58,99,.18)}
+    .mz-week-day strong{display:block;font-size:13px}.mz-week-day span{display:block;margin-top:5px;font-size:17px;font-weight:800;color:inherit}
+    .mz-status-green{background:#e9f7ef!important;border-color:#35a47c!important;color:#1f6b51!important}
+    .mz-status-yellow{background:#fff8e5!important;border-color:#d9a52e!important;color:#8b6500!important}
+    .mz-status-red{background:#fff0f0!important;border-color:#d85c5c!important;color:#9b2f2f!important}
+    .mz-week-summary{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid #e2e4e9;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
+    @media(max-width:720px){
+      html,body{width:100%;min-height:100%;margin:0;background:#f7f4ee}
+      body{overflow-x:hidden}
+      #maz-os{width:100vw;min-height:100svh;padding:0 0 calc(92px + env(safe-area-inset-bottom));font-size:16px;overflow-x:hidden;background:#f7f4ee}
+      .mz-wrap{max-width:none;width:100%;margin:0}
+      .mz-hero{padding:18px 16px;border-radius:0;margin-bottom:10px}.mz-hero h1{font-size:26px}.mz-hero p{font-size:14px;line-height:1.55}
+      .mz-tabs{position:fixed;z-index:1000;right:0;left:0;bottom:0;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;overflow:visible;margin:0;padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #dde2e8;border-right:0;border-left:0;border-bottom:0;border-radius:0;box-shadow:0 -8px 24px rgba(18,41,75,.12);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+      .mz-tabs button{padding:10px 6px;font-size:13px;min-width:0;min-height:48px;white-space:normal;border-radius:12px}
+      .mz-days{gap:7px;padding:2px 0 7px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.mz-days button{min-width:88px;padding:9px 11px;scroll-snap-align:start}
+      .mz-card{padding:14px 12px;border-radius:0;width:100%;border-right:0;border-left:0}.mz-head{gap:6px}.mz-head h2{font-size:22px}.mz-chip{font-size:12px;padding:6px 8px}
+      .mz-dashboard{display:block}.mz-dash-wide{grid-column:auto}.mz-dash-card{padding:14px;border-radius:13px;margin-bottom:10px;width:100%}.mz-dash-card:last-child{margin-bottom:0}.mz-dash-card h3{font-size:16px}.mz-dash-value{font-size:23px}.mz-dash-card p{font-size:14px;line-height:1.5}
+      .mz-smart{grid-template-columns:1fr;padding:12px;gap:10px;border-radius:13px}.mz-smart h3{font-size:18px}.mz-smart p{font-size:13px;line-height:1.5}.mz-smart button{width:100%}
+      .mz-list{gap:8px}.mz-row{grid-template-columns:28px minmax(0,1fr);gap:9px;padding:11px;border-radius:12px;align-items:start}.mz-row input{width:22px;height:22px;margin-top:2px}.mz-row label{min-width:0}.mz-row strong{font-size:15px;line-height:1.35}.mz-row small{font-size:12px;line-height:1.45;display:block;margin-top:2px}.mz-row time,.mz-row a{grid-column:2;width:100%;max-width:100%;white-space:normal;margin-top:4px}.mz-row time{font-size:12px}.mz-row a{min-height:44px}
+      .mz-whoop{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mz-whoop button{padding:8px 4px;font-size:12px;min-width:0;min-height:44px}
+      .mz-week{padding:12px;margin-right:-12px;margin-left:-12px;border-radius:0;border-right:0;border-left:0}.mz-week-head{align-items:flex-start;padding:0 12px}.mz-week-score{font-size:21px}.mz-week .mz-progress{margin-right:12px;margin-left:12px}.mz-week-days{display:flex!important;gap:9px!important;overflow-x:auto!important;padding:3px 12px 9px!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;grid-template-columns:none!important}.mz-week-day{min-width:112px!important;flex:0 0 112px!important;scroll-snap-align:start;padding:12px 7px}.mz-week-day strong{font-size:14px}.mz-week-day span{font-size:18px}
+      .mz-week-summary{padding:11px 12px;font-size:13px}.mz-progress{height:10px;margin:8px 0 13px}.mz-actions button{width:100%;min-height:46px}
+    }
+    @media(max-width:380px){.mz-tabs button{font-size:12px}.mz-hero h1{font-size:24px}.mz-head h2{font-size:20px}.mz-dash-value{font-size:21px}.mz-week-day{min-width:104px!important;flex-basis:104px!important}}
+  
+    /* ===== Mazen OS Mobile First Override ===== */
+    html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100%!important;background:#f7f4ee!important}
+    #maz-os{width:100%!important;max-width:none!important;margin:0!important}
+    @media(max-width:720px){
+      html,body{overflow-x:hidden!important}
+      #maz-os{width:100vw!important;max-width:100vw!important;min-height:100dvh!important;margin:0!important;padding:0 0 calc(88px + env(safe-area-inset-bottom))!important;overflow-x:hidden!important;background:#f7f4ee!important}
+      #maz-os .mz-wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+      #maz-os .mz-hero{width:100%!important;margin:0!important;border-radius:0 0 18px 18px!important;padding:18px 16px 17px!important}
+      #maz-os .mz-hero h1{font-size:27px!important;line-height:1.2!important}
+      #maz-os .mz-hero p{font-size:14px!important;line-height:1.6!important}
+      #maz-os .mz-card,#maz-os #mz-training-panel>.mz-card{width:calc(100% - 20px)!important;margin:10px!important;padding:14px!important;border-radius:16px!important}
+      #maz-os .mz-dashboard{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+      #maz-os .mz-dash-card,#maz-os .mz-dash-wide{grid-column:auto!important;width:100%!important;min-width:0!important;padding:14px!important;border-radius:14px!important}
+      #maz-os .mz-dash-value{font-size:23px!important}
+      #maz-os .mz-dash-card h3{font-size:15px!important}
+      #maz-os .mz-dash-card p{font-size:13px!important;line-height:1.55!important}
+      #maz-os .mz-week{width:100%!important;margin-top:12px!important;padding:12px!important;border-radius:14px!important}
+      #maz-os .mz-week-days{display:flex!important;grid-template-columns:none!important;gap:9px!important;width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding:3px 1px 8px!important;scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch!important}
+      #maz-os .mz-week-day{flex:0 0 92px!important;min-width:92px!important;padding:11px 8px!important;scroll-snap-align:start!important;border-radius:13px!important}
+      #maz-os .mz-week-day strong{font-size:13px!important}
+      #maz-os .mz-week-day span{font-size:18px!important}
+      #maz-os .mz-tabs{position:fixed!important;z-index:9999!important;right:0!important;left:0!important;bottom:0!important;width:100%!important;margin:0!important;padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px!important;background:rgba(255,255,255,.96)!important;border-top:1px solid #dfe4ea!important;border-radius:0!important;box-shadow:0 -8px 24px rgba(18,41,75,.12)!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important}
+      #maz-os .mz-tabs button{min-height:50px!important;min-width:0!important;padding:8px 4px!important;border-radius:13px!important;font-size:13px!important;white-space:normal!important}
+      #maz-os .mz-days{width:calc(100% - 20px)!important;margin:10px!important;padding-bottom:6px!important;gap:8px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch!important}
+      #maz-os .mz-days button{flex:0 0 92px!important;min-width:92px!important;scroll-snap-align:start!important}
+      #maz-os .mz-smart{grid-template-columns:1fr!important;gap:10px!important;padding:13px!important}
+      #maz-os .mz-smart button{width:100%!important;min-height:48px!important}
+      #maz-os .mz-list{gap:9px!important}
+      #maz-os .mz-row{grid-template-columns:30px minmax(0,1fr)!important;gap:9px!important;width:100%!important;padding:12px!important;border-radius:13px!important;align-items:start!important}
+      #maz-os .mz-row input{width:23px!important;height:23px!important;margin-top:2px!important}
+      #maz-os .mz-row label{min-width:0!important}
+      #maz-os .mz-row strong{font-size:15px!important;line-height:1.4!important}
+      #maz-os .mz-row small{display:block!important;font-size:12.5px!important;line-height:1.5!important;margin-top:3px!important}
+      #maz-os .mz-row time,#maz-os .mz-row a{grid-column:2!important;width:100%!important;max-width:100%!important;margin-top:5px!important}
+      #maz-os .mz-row a{min-height:46px!important}
+      #maz-os .mz-row time{font-size:12.5px!important;white-space:normal!important}
+      #maz-os .mz-whoop{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important}
+      #maz-os .mz-whoop button{min-width:0!important;min-height:46px!important;font-size:12px!important;padding:7px 3px!important}
+      #maz-os .mz-head h2{font-size:22px!important}
+      #maz-os .mz-chip{font-size:12px!important}
+      #maz-os .mz-actions button{width:100%!important;min-height:48px!important}
+    }
+    @media(min-width:721px){
+      #maz-os{padding:18px!important}
+      #maz-os .mz-wrap{max-width:980px!important;margin:auto!important}
+    }
+
+  </style>
+
+  <div class="mz-wrap">
+    <section class="mz-hero"><h1>🎯 Mazen OS</h1><p>نظام الأداء الشخصي لإدارة اليوم، التعلم، الصحة، والتقدم</p></section>
+    <div class="mz-tabs"><button type="button" id="mz-dashboard-tab" class="active">🏠 الرئيسية</button><button type="button" id="mz-life-tab">📋 يومي</button><button type="button" id="mz-training-tab">🏋️ التدريب</button></div>
+
+    <section class="mz-card" id="mz-dashboard-panel">
+      <div class="mz-head"><div><h2>لوحة التحكم</h2><p>ملخص اليوم وأهم الأولويات</p></div><span class="mz-chip" id="mz-dashboard-date"></span></div>
+      <div class="mz-dashboard">
+        <div class="mz-dash-card"><h3>📅 اليوم</h3><div class="mz-dash-value" id="mz-dashboard-day">—</div><p id="mz-dashboard-focus">—</p></div>
+        <div class="mz-dash-card"><h3>🏋️ تمرين اليوم</h3><div class="mz-dash-value" id="mz-dashboard-workout">—</div><p id="mz-dashboard-workout-meta">—</p></div>
+        <div class="mz-dash-card"><h3>📚 جلسة التطوير</h3><div class="mz-dash-value" id="mz-dashboard-development">—</div><p id="mz-dashboard-development-note">—</p></div>
+        <div class="mz-dash-card"><h3>✅ إنجاز اليوم</h3><div class="mz-dash-value" id="mz-dashboard-progress">0%</div><p>تُحدّث تلقائيًا من قائمة يومي</p></div>
+        <div class="mz-dash-card mz-dash-wide"><h3>🎯 المهمة الحالية</h3><div class="mz-dash-value" id="mz-dashboard-current">—</div><p id="mz-dashboard-next">—</p></div>
+      </div>
+      <div class="mz-week">
+        <div class="mz-week-head"><div><h3>📈 تطور الأسبوع</h3><p id="mz-week-range" style="margin:4px 0 0;color:#657083">من السبت إلى الجمعة</p></div><div class="mz-week-score" id="mz-week-score">0%</div></div>
+        <div class="mz-progress"><span id="mz-week-bar"></span></div>
+        <div class="mz-week-days" id="mz-week-days"></div>
+        <div class="mz-week-summary" id="mz-week-summary"><span>مؤشر الأسبوع</span><strong id="mz-week-summary-score">0%</strong></div>
+      </div>
+    </section>
+
+    <section class="mz-card mz-hidden" id="mz-life-panel">
+      <div class="mz-head"><div><h2>جدولي اليومي</h2><p>العادات الأساسية التي تبني هويتي</p></div><span class="mz-chip" id="mz-date"></span></div>
+      <div class="mz-smart">
+        <div><h3 id="mz-greeting">صباح الخير يا مازن</h3><p>المهمة الحالية: <strong id="mz-current-task">—</strong></p><p>المهمة التالية: <span id="mz-next-task">—</span></p></div>
+        <button type="button" id="mz-open-today">فتح تمرين اليوم</button>
+      </div>
+      <strong id="mz-life-label">0 من 10 عادات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div><p id="mz-save-status" style="margin:-6px 0 14px;color:#657083;font-size:13px">يتم الحفظ تلقائيًا على هذا الجهاز</p>
+      <div class="mz-list" id="mz-habits"></div>
+      <div class="mz-actions"><button type="button" id="mz-reset-life">إعادة ضبط اليوم</button></div>
+    </section>
+
+    <section id="mz-training-panel" class="mz-hidden">
+      <div class="mz-days" id="mz-days"></div>
+      <div class="mz-card">
+        <div class="mz-head"><div><h2 id="mz-title"></h2><p id="mz-goal"></p></div><span class="mz-chip" id="mz-meta"></span></div>
+        <div class="mz-whoop"><button type="button" data-mz="g">🟢 مرتفع</button><button type="button" data-mz="y">🟡 متوسط</button><button type="button" data-mz="r">🔴 منخفض</button></div>
+        <div class="mz-note" id="mz-advice">اختر مستوى التعافي لتعديل الجلسة.</div>
+        <strong id="mz-work-label"></strong><div class="mz-progress"><span id="mz-work-bar"></span></div>
+        <div class="mz-list" id="mz-workout"></div>
+        <div class="mz-actions"><button type="button" id="mz-reset-work">إعادة ضبط التمرين</button></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function(){
+      var root=document.getElementById('maz-os');
+      var weekdayHabits=[
+        ['الاستيقاظ والصلاة والقرآن','صلاة الفجر، الأذكار وصفحتان من القرآن','05:45 – 06:10'],
+        ['الرياضة','تمرين اليوم حسب الخطة','06:30 – 07:45'],
+        ['العمل','الأولويات المهنية','08:30 – 15:00'],
+        ['العائلة والغداء','وقت للعائلة وتناول الغداء','15:00 – 17:00'],
+        ['الدراسة الأكاديمية','الماجستير أو البحث العلمي','17:00 – 18:30'],
+        ['الراحة','استراحة واستعادة للطاقة','18:30 – 19:00'],
+        ['جلسة التطوير','تتغير تلقائيًا حسب يوم الأسبوع','19:00 – 20:00'],
+        ['العائلة والعشاء','وقت نوعي مع العائلة وتناول العشاء','20:00 – 21:30'],
+        ['القراءة','30 دقيقة قراءة','21:30 – 22:00'],
+        ['النوم','النوم في الموعد','22:00 – 05:45']
+      ];
+      var thursdayHabits=weekdayHabits.map(function(h){return h.slice()});
+      thursdayHabits[9]=['النوم','نوم نهاية الأسبوع والاستيقاظ الجمعة الساعة 08:00','00:00 – 08:00'];
+      var fridayHabits=[
+        ['الاستيقاظ وصلاة الصباح','استيقاظ هادئ وبدء يوم الجمعة','08:00 – 08:30'],
+        ['فطور عائلي وأنشطة','فطور ممتد ووقت نوعي مع الأسرة','08:30 – 10:30'],
+        ['قراءة سورة الكهف','قراءة سورة الكهف والاستعداد لصلاة الجمعة','10:30 – 11:30'],
+        ['صلاة الجمعة','يتبع توقيت صلاة الجمعة محليًا؛ التوجه للمسجد قبل الموعد بـ10 دقائق','موعد الصلاة'],
+        ['غداء عائلي','غداء ووقت عائلي هادئ','13:30 – 15:00'],
+        ['قراءة كتاب','جلسة قراءة مركزة','15:00 – 16:00'],
+        ['البحر والنشاط العائلي','الأطفال بالدراجات وأنت جري خفيف؛ العودة قبل غروب الشمس','16:00 – الغروب'],
+        ['الاستحمام والاسترخاء','العودة للمنزل والاستحمام','بعد الغروب'],
+        ['فيلم أو مسلسل','وقت ترفيهي مع العائلة','20:00 – 23:30'],
+        ['النوم','النوم الساعة 00:00 والاستيقاظ السبت الساعة 08:00','00:00 – 08:00']
+      ];
+      var saturdayHabits=[
+        ['الاستيقاظ والصلاة','بداية هادئة ثم الاستعداد للنادي','08:00 – 08:30'],
+        ['النادي','تنفيذ تمرين السبت حسب الخطة','08:30 – 09:45'],
+        ['فطور عائلي','العودة من النادي وفطور مع العائلة','10:00 – 11:30'],
+        ['استراحة الظهر','راحة واسترخاء','12:00 – 13:30'],
+        ['يوم مفتوح','وقت مرن مع العائلة أو الأصدقاء','13:30 – 18:00'],
+        ['قراءة كتاب','جلسة قراءة هادئة','18:00 – 18:45'],
+        ['مراجعة الأسبوع','مراجعة ما تم إنجازه وما يحتاج إلى تصحيح','18:45 – 19:30'],
+        ['تحديث الأسبوع القادم','إضافة وتصحيح وتحديث برنامج الأسبوع القادم','19:30 – 20:15'],
+        ['وقت عائلي مسائي','عشاء ووقت مفتوح مع الأسرة','20:15 – 22:30'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد لأسبوع جديد','22:30 – 23:00']
+      ];
+      function habitsForDate(now){
+        if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
+        if(now.getDay()===6){return saturdayHabits.map(function(h){return h.slice()})}
+        if(now.getDay()===4){return thursdayHabits.map(function(h){return h.slice()})}
+        return weekdayHabits.map(function(h){return h.slice()});
+      }
+      var habits=habitsForDate(new Date());
+      var days=[
+        {label:'السبت',title:'قوة الجزء السفلي',goal:'القوة ودعم أداء الملاكمة',meta:'75 دقيقة • Strain 12–14',items:[['Back Squat','4 × 5','https://www.youtube.com/watch?v=dW5-C1fsMjk'],['Romanian Deadlift','3 × 8','https://www.youtube.com/watch?v=SE-2Y-3a1pY'],['Bulgarian Split Squat','3 × 10 لكل رجل','https://www.youtube.com/watch?v=2C-uNgKwPLE'],['Walking Lunges','3 × 12','https://www.youtube.com/watch?v=vni4lElTvsY'],['Front Plank','3 × 45 ثانية','https://www.youtube.com/watch?v=pSHjTRCQxIw'],['Side Plank','3 × 30 ثانية','https://www.youtube.com/watch?v=K2VljzCC16g'],['Zone 2','20 دقيقة','https://www.youtube.com/results?search_query=peter+attia+zone+2']]},
+        {label:'الأحد',title:'تقنية الملاكمة',goal:'المهارة والدقة والدفاع',meta:'75 دقيقة • Strain 14–16',items:[['Jump Rope','5 دقائق','https://www.youtube.com/results?search_query=FightTips+jump+rope'],['Footwork','5 جولات','https://www.youtube.com/results?search_query=Precision+Striking+boxing+footwork'],['Shadow Boxing','3 جولات','https://www.youtube.com/results?search_query=Precision+Striking+shadow+boxing'],['Heavy Bag','6 جولات','https://www.youtube.com/results?search_query=FightTips+heavy+bag'],['Defense Drills','3 جولات','https://www.youtube.com/results?search_query=FightTips+boxing+defense']]},
+        {label:'الإثنين',title:'قوة الجزء العلوي',goal:'القوة الوظيفية وثبات الكتفين',meta:'75 دقيقة • Strain 12–14',items:[['Bench Press','4 × 5','https://www.youtube.com/results?search_query=Jeff+Nippard+bench+press'],['Pull-Ups','4 مجموعات','https://www.youtube.com/results?search_query=Jeff+Nippard+pull+ups'],['Overhead Press','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+overhead+press'],['Barbell Row','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+barbell+row'],['Farmer Carry','3 × 30 متر','https://www.youtube.com/results?search_query=farmer+carry+technique']]},
+        {label:'الثلاثاء',title:'أداء الملاكمة',goal:'التحمل القتالي تحت الضغط',meta:'75 دقيقة • Strain 15–17',items:[['Footwork','4 جولات','https://www.youtube.com/results?search_query=boxing+footwork+drills'],['Heavy Bag','8 جولات','https://www.youtube.com/results?search_query=boxing+heavy+bag+conditioning'],['HIIT','6–8 فترات','https://www.youtube.com/results?search_query=boxing+HIIT+workout'],['Sparring','حسب التعافي','https://www.youtube.com/results?search_query=boxing+sparring+fundamentals'],['Cool Down','10 دقائق','https://www.youtube.com/results?search_query=boxing+cool+down']]},
+        {label:'الأربعاء',title:'الاستشفاء والحركة',goal:'التعافي وتحسين حركة المفاصل',meta:'60 دقيقة • Strain 8–10',items:[['Zone 2','30 دقيقة','https://www.youtube.com/results?search_query=peter+attia+zone+2'],['Foam Roller','10 دقائق','https://www.youtube.com/results?search_query=full+body+foam+rolling'],['Hip Mobility','8 دقائق','https://www.youtube.com/results?search_query=hip+mobility+routine'],['Stretching','5 دقائق','https://www.youtube.com/results?search_query=full+body+stretching']]},
+        {label:'الخميس',title:'سرعة الملاكمة',goal:'السرعة والانفجار وردة الفعل',meta:'75 دقيقة • Strain 13–15',items:[['Ladder Drills','10 دقائق','https://www.youtube.com/results?search_query=boxing+ladder+drills'],['Plyometrics','3–4 تمارين','https://www.youtube.com/results?search_query=boxing+plyometrics'],['Speed Bag','4 جولات','https://www.youtube.com/results?search_query=FightTips+speed+bag'],['Double-End Bag','4 جولات','https://www.youtube.com/results?search_query=double+end+bag+tutorial'],['Heavy Bag Speed','5 جولات','https://www.youtube.com/results?search_query=boxing+speed+heavy+bag']]},
+        {label:'الجمعة',title:'تعافٍ نشط',goal:'التعافي والاستعداد للأسبوع',meta:'45 دقيقة • Strain 4–7',items:[['Walking','45 دقيقة','https://www.youtube.com/results?search_query=active+recovery+walking'],['Stretching','10 دقائق','https://www.youtube.com/results?search_query=full+body+stretching'],['Breathing','5 دقائق','https://www.youtube.com/results?search_query=breathing+exercise+recovery']]}
+      ];
+      var habitState=[];var workoutState=[];var active=0;var currentHabit=-1;var i;var selectedDashboardDate=new Date();
+      function localDateKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
+      function weekStartSaturday(date){var d=new Date(date.getFullYear(),date.getMonth(),date.getDate());var back=(d.getDay()+1)%7;d.setDate(d.getDate()-back);return d}
+      function habitsForSpecificDate(date){return habitsForDate(date)}
+      function dailyProgressForDate(date){
+        var key='mazenOSProgressV2:'+localDateKey(date);var state=null;
+        try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
+        var total=habitsForSpecificDate(date).length;
+        if(!state||!Array.isArray(state.habitState)||state.habitState.length!==total){return 0}
+        var done=0;for(var x=0;x<state.habitState.length;x++){if(state.habitState[x]){done++}}
+        return total?Math.round(done/total*100):0;
+      }
+      function savedHabitsForDate(date){
+        var list=habitsForSpecificDate(date);var state=null;
+        try{state=JSON.parse(localStorage.getItem('mazenOSProgressV2:'+localDateKey(date)))}catch(e){}
+        var values=[];for(var q=0;q<list.length;q++){values.push(false)}
+        if(state&&Array.isArray(state.habitState)&&state.habitState.length===list.length){values=state.habitState.map(Boolean)}
+        return {habits:list,state:values};
+      }
+      function openDayFromWeek(date){
+        var selectedDate=new Date(date.getFullYear(),date.getMonth(),date.getDate());var selectedData=savedHabitsForDate(selectedDate);var saved=null;
+        selectedDashboardDate=new Date(selectedDate);habits=selectedData.habits;habitState=selectedData.state;storageKey='mazenOSProgressV2:'+localDateKey(selectedDate);currentHabit=-1;
+        try{saved=JSON.parse(localStorage.getItem(storageKey))}catch(e){}
+        for(var wd=0;wd<days.length;wd++){workoutState[wd]=days[wd].items.map(function(){return false})}
+        if(saved&&Array.isArray(saved.workoutState)&&saved.workoutState.length===workoutState.length){
+          for(var wi=0;wi<workoutState.length;wi++){if(Array.isArray(saved.workoutState[wi])&&saved.workoutState[wi].length===workoutState[wi].length){workoutState[wi]=saved.workoutState[wi].map(Boolean)}}
+        }
+        active=dayMap[selectedDate.getDay()];el('mz-date').textContent=names[selectedDate.getDay()]+'، '+selectedDate.getDate()+'/'+(selectedDate.getMonth()+1);el('mz-greeting').textContent='خطة يوم '+names[selectedDate.getDay()];
+        el('mz-current-task').textContent=habits.length?habits[0][0]:'—';el('mz-next-task').textContent=habits.length>1?habits[1][0]+' • '+habits[1][2]:'—';renderHabits();renderTraining();refreshProgress();el('mz-life-tab').click();
+      }
+      function renderWeeklyProgress(){
+        var labels=['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+        var start=weekStartSaturday(new Date());var box=el('mz-week-days');box.innerHTML='';var total=0;
+        for(var w=0;w<7;w++){
+          var date=new Date(start);date.setDate(start.getDate()+w);var pct=dailyProgressForDate(date);total+=pct;
+          var statusClass=pct>90?' mz-status-green':(pct>=70?' mz-status-yellow':' mz-status-red');
+          var card=document.createElement('button');card.type='button';card.className='mz-week-day'+statusClass+(localDateKey(date)===localDateKey(selectedDashboardDate)?' active':'');card.innerHTML='<strong>'+labels[w]+'</strong><span>'+pct+'%</span>';card.setAttribute('aria-label','عرض بيانات '+labels[w]);
+          (function(chosenDate){card.addEventListener('click',function(){openDayFromWeek(chosenDate)})})(date);
+          box.appendChild(card);
+        }
+        var average=Math.round(total/7);var end=new Date(start);end.setDate(start.getDate()+6);var weekClass=average>90?'mz-status-green':(average>=70?'mz-status-yellow':'mz-status-red');
+        el('mz-week-score').textContent=average+'%';el('mz-week-bar').style.width=average+'%';
+        function formatGregorianDate(date){return String(date.getDate()).padStart(2,'0')+'/'+String(date.getMonth()+1).padStart(2,'0')+'/'+date.getFullYear()}
+        el('mz-week-range').textContent='من '+formatGregorianDate(start)+' إلى '+formatGregorianDate(end);
+        el('mz-week-summary-score').textContent=average+'%';el('mz-week-summary').className='mz-week-summary '+weekClass;
+      }
+      var todayKey=localDateKey(new Date());
+      var storageKey='mazenOSProgressV2:'+todayKey;
+      for(i=0;i<habits.length;i++){habitState.push(false)}
+      for(i=0;i<days.length;i++){workoutState.push([]);var j;for(j=0;j<days[i].items.length;j++){workoutState[i].push(false)}}
+      try{
+        var savedState=JSON.parse(localStorage.getItem(storageKey));
+        if(savedState){
+          if(Array.isArray(savedState.habitState)&&savedState.habitState.length===habitState.length){habitState=savedState.habitState.map(Boolean)}
+          if(Array.isArray(savedState.workoutState)&&savedState.workoutState.length===workoutState.length){
+            for(i=0;i<workoutState.length;i++){
+              if(Array.isArray(savedState.workoutState[i])&&savedState.workoutState[i].length===workoutState[i].length){workoutState[i]=savedState.workoutState[i].map(Boolean)}
+            }
+          }
+        }
+      }catch(storageError){}
+
+      function el(id){return root.querySelector('#'+id)}
+      function saveState(){
+        try{
+          localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,workoutState:workoutState,updatedAt:Date.now()}));
+          el('mz-save-status').textContent='تم الحفظ الآن';
+          renderWeeklyProgress();
+          return true;
+        }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
+      }
+      function refreshProgress(){
+        var completed=0;for(var h=0;h<habitState.length;h++){if(habitState[h]){completed++}}
+        var percent=Math.round(completed/habitState.length*100);
+        el('mz-life-label').textContent=completed+' من '+habits.length+' عادات';
+        el('mz-life-bar').style.width=percent+'%';
+        el('mz-dashboard-progress').textContent=percent+'%';
+      }
+      function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
+      function developmentSession(now){
+        var day=now.getDay();
+        if(day===5){return ['يوم الجمعة العائلي','عبادة، عائلة، قراءة ونشاط خارجي']}
+        if(day===6){return ['مراجعة الأسبوع','قراءة، تصحيح وتحديث برنامج الأسبوع القادم']}
+        if(day===6||day===1||day===3){return ['الإنجليزية الأكاديمية','قراءة أكاديمية، مفردات، كتابة أو استماع']}
+        if(day===0||day===2||day===4){return ['الذكاء الاصطناعي','تعلم أداة أو مفهوم وتطبيقه عمليًا']}
+        return ['مراجعة أسبوعية وتخطيط','تقييم الأسبوع وتحديد أولويات الأسبوع القادم'];
+      }
+      function currentHabitIndex(now){
+        var value=now.getHours()*60+now.getMinutes();
+        if(now.getDay()===5){
+          var fridayRanges=[[480,510],[510,630],[630,690],[690,810],[810,900],[900,960],[960,1080],[1080,1200],[1200,1410],[1410,1920]];
+          for(var f=0;f<fridayRanges.length;f++){var fs=fridayRanges[f][0],fe=fridayRanges[f][1];if(fe>1440){if(value>=fs||value<fe-1440){return f}}else if(value>=fs&&value<fe){return f}}
+          return -1;
+        }
+        if(now.getDay()===6){
+          var saturdayRanges=[[480,510],[510,585],[600,690],[720,810],[810,1080],[1080,1125],[1125,1170],[1170,1215],[1215,1350],[1350,1380]];
+          for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
+          return -1;
+        }
+        var ranges=[[345,370],[390,465],[510,900],[900,1020],[1020,1110],[1110,1140],[1140,1200],[1200,1290],[1290,1320],[1320,1785]];
+        for(var r=0;r<ranges.length;r++){
+          var start=ranges[r][0],end=ranges[r][1];
+          if(end>1440){if(value>=start||value<end-1440){return r}}
+          else if(value>=start&&value<end){return r}
+        }
+        return -1;
+      }
+      function greeting(now){var h=now.getHours();return h<12?'صباح الخير يا مازن':h<18?'مساء الخير يا مازن':'مساء الخير يا مازن'}
+      function updateDashboard(now,session){
+        var selected=selectedDashboardDate||now;var selectedData=savedHabitsForDate(selected);var selectedHabits=selectedData.habits;var selectedState=selectedData.state;var selectedWorkoutIndex=dayMap[selected.getDay()];var selectedProgress=dailyProgressForDate(selected);var isToday=localDateKey(selected)===localDateKey(new Date());var firstIncomplete=-1;
+        for(var z=0;z<selectedState.length;z++){if(!selectedState[z]){firstIncomplete=z;break}}
+        el('mz-dashboard-date').textContent=names[selected.getDay()]+'، '+selected.getDate()+'/'+(selected.getMonth()+1);
+        el('mz-dashboard-day').textContent=names[selected.getDay()];
+        el('mz-dashboard-focus').textContent=isToday&&currentHabit>=0?habits[currentHabit][0]:(firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'مكتمل');
+        el('mz-dashboard-workout').textContent=days[selectedWorkoutIndex].title;
+        el('mz-dashboard-workout-meta').textContent=days[selectedWorkoutIndex].meta;
+        el('mz-dashboard-development').textContent=session[0];
+        el('mz-dashboard-development-note').textContent=session[1];
+        el('mz-dashboard-progress').textContent=selectedProgress+'%';
+        if(isToday){
+          el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن';
+          var nextIndex=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:0;
+          el('mz-dashboard-next').textContent='التالي: '+habits[nextIndex][0]+' • '+habits[nextIndex][2];
+        }else{
+          el('mz-dashboard-current').textContent=firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'تم إنجاز جميع مهام اليوم';
+          el('mz-dashboard-next').textContent=firstIncomplete>=0?'الوقت: '+selectedHabits[firstIncomplete][2]:'نسبة الإنجاز: 100%';
+        }
+        renderWeeklyProgress();
+      }
+      function updateSmartFlow(){
+        var now=new Date();var session=developmentSession(now);habits[6][0]='جلسة التطوير: '+session[0];habits[6][1]=session[1];currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
+        el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن أو انتقال بين المهام';
+        var next=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:(currentHabit===habits.length-1?0:0);
+        el('mz-next-task').textContent=habits[next][0]+' • '+habits[next][2];
+        renderHabits();updateDashboard(now,session);
+      }
+      function renderHabits(){
+        var box=el('mz-habits');box.innerHTML='';var done=0;
+        habits.forEach(function(h,index){
+          var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'');
+          var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
+          var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
+          var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
+          check.addEventListener('change',function(){
+            habitState[index]=check.checked;
+            saveState();
+            renderHabits();
+            refreshProgress();
+            updateDashboard(new Date(),developmentSession(new Date()));
+          });
+          row.appendChild(check);row.appendChild(label);row.appendChild(time);box.appendChild(row);
+        });
+        refreshProgress();
+      }
+      function renderDays(){
+        var nav=el('mz-days');nav.innerHTML='';days.forEach(function(d,index){var b=document.createElement('button');b.type='button';b.textContent=d.label;b.className=index===active?'active':'';b.addEventListener('click',function(){active=index;renderTraining()});nav.appendChild(b)});
+      }
+      function renderTraining(){
+        renderDays();var day=days[active];el('mz-title').textContent=day.label+' | '+day.title;el('mz-goal').textContent=day.goal;el('mz-meta').textContent=day.meta;
+        var list=el('mz-workout');list.innerHTML='';var done=0;
+        day.items.forEach(function(item,index){
+          var row=document.createElement('div');row.className='mz-row';var check=document.createElement('input');check.type='checkbox';check.checked=workoutState[active][index];
+          var label=document.createElement('label');label.innerHTML='<strong>'+item[0]+'</strong><small>'+item[1]+'</small>';if(check.checked){label.className='mz-done';done++}
+          var link=document.createElement('a');link.href=item[2];link.target='_blank';link.rel='noopener noreferrer';link.textContent='🎥 الفيديو';
+          check.addEventListener('change',function(){workoutState[active][index]=check.checked;saveState();renderTraining()});row.appendChild(check);row.appendChild(label);row.appendChild(link);list.appendChild(row);
+        });
+        el('mz-work-label').textContent=done+' من '+day.items.length+' تمارين';el('mz-work-bar').style.width=Math.round(done/day.items.length*100)+'%';
+      }
+      el('mz-dashboard-tab').addEventListener('click',function(){this.className='active';el('mz-life-tab').className='';el('mz-training-tab').className='';el('mz-dashboard-panel').className='mz-card';el('mz-life-panel').className='mz-card mz-hidden';el('mz-training-panel').className='mz-hidden'});
+      el('mz-life-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-training-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-life-panel').className='mz-card';el('mz-training-panel').className='mz-hidden'});
+      el('mz-training-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-life-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-training-panel').className='';el('mz-life-panel').className='mz-card mz-hidden';renderTraining()});
+      el('mz-open-today').addEventListener('click',function(){el('mz-training-tab').click()});
+      root.querySelectorAll('[data-mz]').forEach(function(b){b.addEventListener('click',function(){root.querySelectorAll('[data-mz]').forEach(function(x){x.className=''});b.className='active';var t=b.getAttribute('data-mz');el('mz-advice').textContent=t==='g'?'نفّذ الجلسة كاملة.':t==='y'?'نفّذ الخطة دون إضافة حجم أو شدة.':'خفّض الحجم، وتجنب HIIT وSparring.'})});
+      el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});
+      el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});saveState();renderTraining()});
+      var now=new Date();var names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];var dayMap=[1,2,3,4,5,6,0];active=dayMap[now.getDay()];el('mz-date').textContent=names[now.getDay()]+'، '+now.getDate()+'/'+(now.getMonth()+1);
+      updateSmartFlow();renderTraining();refreshProgress();renderWeeklyProgress();setInterval(updateSmartFlow,60000);
+    })();
+  </script>
+</div>
