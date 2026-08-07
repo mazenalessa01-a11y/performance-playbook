@@ -35,8 +35,21 @@
     .mz-status-yellow{background:#fff8e5!important;border-color:#d9a52e!important;color:#8b6500!important}
     .mz-status-red{background:#fff0f0!important;border-color:#d85c5c!important;color:#9b2f2f!important}
     .mz-week-summary{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid #e2e4e9;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
-    @media(max-width:560px){.mz-row{grid-template-columns:auto 1fr}.mz-row a,.mz-row time{grid-column:2;width:max-content}.mz-hero h1{font-size:27px}.mz-smart{grid-template-columns:1fr}.mz-smart button{width:100%}}
-    @media(max-width:560px){.mz-dashboard{grid-template-columns:1fr}.mz-dash-wide{grid-column:auto}.mz-week-days{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media(max-width:720px){
+      #maz-os{padding:10px;font-size:15px;overflow-x:hidden}
+      .mz-wrap{max-width:100%;width:100%}
+      .mz-hero{padding:16px;border-radius:16px;margin-bottom:10px}.mz-hero h1{font-size:26px}.mz-hero p{font-size:14px;line-height:1.6}
+      .mz-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;overflow:visible}.mz-tabs button{padding:8px 6px;font-size:14px;min-width:0;white-space:normal}
+      .mz-days{gap:6px;padding-bottom:4px;scroll-snap-type:x proximity}.mz-days button{min-width:76px;padding:8px 10px;scroll-snap-align:start}
+      .mz-card{padding:12px;border-radius:15px}.mz-head{gap:6px}.mz-head h2{font-size:21px}.mz-chip{font-size:12px;padding:6px 8px}
+      .mz-dashboard{grid-template-columns:1fr;gap:9px}.mz-dash-wide{grid-column:auto}.mz-dash-card{padding:12px;border-radius:13px}.mz-dash-card h3{font-size:15px}.mz-dash-value{font-size:21px}.mz-dash-card p{font-size:13px;line-height:1.5}
+      .mz-smart{grid-template-columns:1fr;padding:12px;gap:10px;border-radius:13px}.mz-smart h3{font-size:18px}.mz-smart p{font-size:13px;line-height:1.5}.mz-smart button{width:100%}
+      .mz-list{gap:8px}.mz-row{grid-template-columns:28px minmax(0,1fr);gap:9px;padding:10px;border-radius:12px;align-items:start}.mz-row input{width:20px;height:20px;margin-top:2px}.mz-row label{min-width:0}.mz-row strong{font-size:15px;line-height:1.35}.mz-row small{font-size:12px;line-height:1.45;display:block;margin-top:2px}.mz-row time,.mz-row a{grid-column:2;width:100%;max-width:100%;white-space:normal;margin-top:4px}.mz-row time{font-size:12px}.mz-row a{min-height:40px}
+      .mz-whoop{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.mz-whoop button{padding:7px 4px;font-size:12px;min-width:0}
+      .mz-week{padding:12px}.mz-week-head{align-items:flex-start}.mz-week-score{font-size:20px}.mz-week-days{display:flex;gap:7px;overflow-x:auto;padding:2px 0 6px;scroll-snap-type:x mandatory}.mz-week-day{min-width:76px;flex:0 0 76px;scroll-snap-align:start;padding:9px 5px}.mz-week-day strong{font-size:12px}.mz-week-day span{font-size:16px}
+      .mz-week-summary{padding:10px 12px;font-size:13px}.mz-progress{height:10px;margin:8px 0 13px}.mz-actions button{width:100%}
+    }
+    @media(max-width:380px){#maz-os{padding:8px}.mz-tabs button{font-size:12px}.mz-hero h1{font-size:23px}.mz-head h2{font-size:19px}.mz-dash-value{font-size:19px}.mz-week-day{min-width:70px;flex-basis:70px}}
   </style>
 
   <div class="mz-wrap">
