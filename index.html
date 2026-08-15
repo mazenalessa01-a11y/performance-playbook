@@ -133,11 +133,10 @@
         ['👨‍👩‍👧‍👦 الأطفال والأنشطة','نزهة مع الأطفال، دراجات، بحر، حديقة، أو نشاط منزلي ممتع يصنع ذكرى مشتركة.','مرن – مرن']
       ];
       var saturdayHabits=[
-        ['🌤️ السبت يوم مفتوح','ابدأ الأسبوع بهدوء ومرونة؛ لا تجعل التخطيط يسرق منك الحياة.','مرن – مرن'],
-        ['🧭 مراجعة Mazen OS','راجع التطبيق وما نجح خلال الأسبوع، وسجل الملاحظات والتحسينات للأسبوع القادم.','مرن – مرن'],
-        ['🎯 تحضير IELTS — ساعتان','خصص ساعتين خلال اليوم لتدريب IELTS: مهارة أو اختبار تجريبي مع مراجعة الأخطاء.','ساعتان – مرنتان'],
-        ['✍️ كتابة أو تصميم محتوى تدريبي','من 16:00 إلى 18:30: كتابة مقال، أو إعداد وتطوير حقيبة تدريبية، أو العمل على محتوى معرفي طويل المدى.','16:00 – 18:30'],
-        ['🤝 العائلة والأصدقاء','اترك بقية اليوم مفتوحًا للعائلة أو الأصدقاء والأنشطة التي تعيد لك الطاقة.','مرن – مرن']
+        ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل الملاحظات والتحسينات للأسبوع القادم.','10:00 – 12:00'],
+        ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة.','12:00 – 16:00'],
+        ['✍️ كتابة مقال أو حقيبة تدريبية','جلسة مركزة للكتابة أو إعداد وتطوير حقيبة تدريبية.','17:00 – 18:00'],
+        ['🎯 تحضير IELTS','ساعتان لتدريب IELTS: مهارة أو اختبار تجريبي مع مراجعة الأخطاء.','18:00 – 20:00']
       ];
       function habitsForDate(now){
         if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
@@ -312,7 +311,7 @@
       }
       function renderHabits(){
         var box=el('mz-habits');box.innerHTML='';var done=0;
-        if(selectedDashboardDate.getDay()===5||selectedDashboardDate.getDay()===6){habits.forEach(function(h){var row=document.createElement('div');row.className='mz-row';var spacer=document.createElement('span');spacer.textContent='';var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';var time=document.createElement('time');time.textContent=h[2];row.appendChild(spacer);row.appendChild(label);row.appendChild(time);box.appendChild(row)});refreshProgress();return}
+        if(selectedDashboardDate.getDay()===5){habits.forEach(function(h){var row=document.createElement('div');row.className='mz-row';var spacer=document.createElement('span');spacer.textContent='';var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';var time=document.createElement('time');time.textContent=h[2];row.appendChild(spacer);row.appendChild(label);row.appendChild(time);box.appendChild(row)});refreshProgress();return}
         habits.forEach(function(h,index){
           var expired=isHabitExpired(h,index)&&!habitState[index];var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'')+(expired?' mz-expired':'');
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
@@ -349,7 +348,11 @@
       el('mz-life-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-training-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-life-panel').className='mz-card';el('mz-training-panel').className='mz-hidden'});
       el('mz-training-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-life-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-training-panel').className='';el('mz-life-panel').className='mz-card mz-hidden';renderTraining()});
       el('mz-open-today').addEventListener('click',function(){el('mz-training-tab').click()});
-      el('mz-enable-notifications').addEventListener('click',function(){if(!('Notification' in window)){alert('الإشعارات غير مدعومة في هذا المتصفح.');return}Notification.requestPermission().then(function(permission){el('mz-enable-notifications').textContent=permission==='granted'?'🔔 التذكيرات مفعلة':'🔔 تفعيل التذكيرات';if(permission==='granted'){showNotification('Mazen OS','تم تفعيل تذكيرات بداية ونهاية المهام.')}})});
+      function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+      function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+      function updateNotificationButton(){var b=el('mz-enable-notifications');if(!('Notification' in window)){b.textContent='🔔 الإشعارات غير متاحة هنا';return}if(Notification.permission==='granted'){b.textContent='🔔 التذكيرات مفعلة';return}if(Notification.permission==='denied'){b.textContent='⚙️ فعّل الإشعارات من الإعدادات';return}if(isIOS()&&!isStandalone()){b.textContent='📲 أضف Mazen OS للشاشة الرئيسية أولاً';return}b.textContent='🔔 تفعيل التذكيرات'}
+      updateNotificationButton();
+      el('mz-enable-notifications').addEventListener('click',function(){if(!('Notification' in window)){alert('الإشعارات غير متاحة في وضع التصفح الحالي. افتح Mazen OS كتطبيق من الشاشة الرئيسية.');return}if(isIOS()&&!isStandalone()){alert('على iPhone: اضغط زر المشاركة في Safari ← إضافة إلى الشاشة الرئيسية، ثم افتح Mazen OS من الأيقونة الجديدة واضغط تفعيل التذكيرات مرة أخرى.');return}if(Notification.permission==='denied'){alert('تم رفض الإشعارات سابقًا. افتح إعدادات iPhone ← الإشعارات ← Mazen OS واسمح بالإشعارات، ثم عد إلى التطبيق.');return}Notification.requestPermission().then(function(permission){updateNotificationButton();if(permission==='granted'){showNotification('Mazen OS','تم تفعيل التذكيرات أثناء تشغيل التطبيق.');checkTaskNotifications()}else{alert('لم يتم منح إذن الإشعارات. يمكنك المحاولة مجددًا من إعدادات الجهاز.')}}).catch(function(){alert('تعذر طلب إذن الإشعارات في هذا الوضع. افتح Mazen OS من الشاشة الرئيسية وحاول مرة أخرى.')})});
       root.querySelectorAll('[data-mz]').forEach(function(b){b.addEventListener('click',function(){root.querySelectorAll('[data-mz]').forEach(function(x){x.className=''});b.className='active';var t=b.getAttribute('data-mz');el('mz-advice').textContent=t==='g'?'نفّذ الجلسة كاملة.':t==='y'?'نفّذ الخطة دون إضافة حجم أو شدة.':'خفّض الحجم، وتجنب HIIT وSparring.'})});
       el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});
       el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});saveState();renderTraining()});
