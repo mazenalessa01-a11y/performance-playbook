@@ -159,7 +159,7 @@
       function weekStartSaturday(date){var d=new Date(date.getFullYear(),date.getMonth(),date.getDate());var back=(d.getDay()+1)%7;d.setDate(d.getDate()-back);return d}
       function habitsForSpecificDate(date){return habitsForDate(date)}
       function dailyProgressForDate(date){
-        if(date.getDay()===5||date.getDay()===6){return null}
+        if(date.getDay()===5){return null}
         var key='mazenOSProgressV2:'+localDateKey(date);var state=null;
         try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
         var dayHabits=habitsForSpecificDate(date);var total=dayHabits.length;
@@ -231,7 +231,7 @@
         }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
       }
       function refreshProgress(){
-        if(selectedDashboardDate.getDay()===5||selectedDashboardDate.getDay()===6){el('mz-life-label').textContent='يوم مفتوح — بلا تقييم';el('mz-life-bar').style.width='0%';el('mz-dashboard-progress').textContent='يوم مفتوح';return}
+        if(selectedDashboardDate.getDay()===5){el('mz-life-label').textContent='يوم مفتوح — بلا تقييم';el('mz-life-bar').style.width='0%';el('mz-dashboard-progress').textContent='يوم مفتوح';return}
         var workoutHabitIndex=-1;for(var hi=0;hi<habits.length;hi++){if(habits[hi][0]==='الرياضة'||habits[hi][0]==='النادي'){workoutHabitIndex=hi;break}}
         var dayWorkoutIndex=dayMap[selectedDashboardDate.getDay()];var workoutItems=days[dayWorkoutIndex].items;var completedWorkoutItems=0;
         for(var wi=0;wi<workoutItems.length;wi++){if(workoutState[dayWorkoutIndex]&&workoutState[dayWorkoutIndex][wi]){completedWorkoutItems++}}
@@ -263,7 +263,7 @@
           return -1;
         }
         if(now.getDay()===6){
-          var saturdayRanges=[[480,510],[510,585],[600,690],[720,810],[810,1080],[1080,1125],[1125,1170],[1170,1215],[1215,1350],[1350,1380]];
+          var saturdayRanges=[[600,720],[720,960],[1020,1080],[1080,1200]];
           for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
           return -1;
         }
