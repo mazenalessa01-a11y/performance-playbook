@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#12294b">
-  <title>Mazen OS</title>
-</head>
-<body>
 <div id="maz-os" dir="rtl">
   <style>
     #maz-os{background:#f7f4ee;color:#172033;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:16px;min-height:100%;}
@@ -25,6 +16,7 @@
     .mz-progress{height:12px;background:#e5e8ee;border-radius:999px;overflow:hidden;margin:10px 0 16px}.mz-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a52e,#35a47c)}
     .mz-list{display:grid;gap:10px}.mz-row{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;border:1px solid #e2e4e9;border-radius:14px;padding:12px;background:#fbfbfc}
     .mz-row input{width:22px;height:22px;accent-color:#35a47c}.mz-row strong{display:block}.mz-row small{color:#657083}.mz-row time{font-size:13px;font-weight:700;color:#b27c00;white-space:nowrap;direction:rtl;unicode-bidi:isolate}
+    .mz-row input:disabled{cursor:not-allowed;opacity:.45}.mz-row.mz-expired{opacity:.58;background:#f3f4f6}.mz-row.mz-expired time{color:#8b94a3}.mz-row.mz-expired small::after{content:' • انتهى الوقت';color:#b04a4a;font-weight:700}
     .mz-row.mz-current{border-color:#d9a52e;background:#fff8e5;box-shadow:0 0 0 2px rgba(217,165,46,.12)}
     .mz-row a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border-radius:10px;background:#173a63;color:#fff;text-decoration:none;white-space:nowrap}
     .mz-done{opacity:.55;text-decoration:line-through}.mz-hidden{display:none}.mz-note{margin:12px 0;padding:11px;border-radius:12px;background:#edf7f2;color:#245644}.mz-whoop{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mz-whoop button{min-height:42px;border:1px solid #d9dde5;background:#fff;border-radius:11px;padding:8px 10px;cursor:pointer}.mz-whoop button.active{outline:3px solid #d9a52e}
@@ -117,42 +109,30 @@
     (function(){
       var root=document.getElementById('maz-os');
       var weekdayHabits=[
-        ['الاستيقاظ والصلاة والقرآن','صلاة الفجر، الأذكار وصفحتان من القرآن','05:45 – 06:10'],
+        ['الاستيقاظ والصلاة والقرآن','صلاة الفجر، الأذكار وصفحتان من القرآن','06:00 – 06:30'],
         ['الرياضة','تمرين اليوم حسب الخطة','06:30 – 07:45'],
         ['العمل','الأولويات المهنية','08:30 – 15:00'],
-        ['العائلة والغداء','وقت للعائلة وتناول الغداء','15:00 – 17:00'],
+        ['وقت العائلة','وقت للعائلة بعد العمل','15:30 – 17:00'],
         ['الدراسة الأكاديمية','الماجستير أو البحث العلمي','17:00 – 18:30'],
-        ['الراحة','استراحة واستعادة للطاقة','18:30 – 19:00'],
-        ['جلسة التطوير','تتغير تلقائيًا حسب يوم الأسبوع','19:00 – 20:00'],
-        ['العائلة والعشاء','وقت نوعي مع العائلة وتناول العشاء','20:00 – 21:30'],
-        ['القراءة','30 دقيقة قراءة','21:30 – 22:00'],
-        ['النوم','النوم في الموعد','22:00 – 05:45']
+        ['الراحة وصلاة المغرب','استراحة تشمل صلاة المغرب','18:30 – 19:15'],
+        ['جلسة التطوير: الذكاء الاصطناعي','تعلم أداة أو مفهوم وتطبيقه عمليًا','19:15 – 20:15'],
+        ['وقت عائلي مسائي','وقت مرن مع العائلة والعشاء','20:15 – 21:30'],
+        ['الإنجليزية اليومية','ممارسة الإنجليزية عبر القراءة، مفردات جديدة، تطبيق الكلمات، والتحدث في العمل أو الجامعة','21:30 – 22:00']
       ];
       var thursdayHabits=weekdayHabits.map(function(h){return h.slice()});
-      thursdayHabits[9]=['النوم','نوم نهاية الأسبوع والاستيقاظ الجمعة الساعة 08:00','00:00 – 08:00'];
       var fridayHabits=[
-        ['الاستيقاظ وصلاة الصباح','استيقاظ هادئ وبدء يوم الجمعة','08:00 – 08:30'],
-        ['فطور عائلي وأنشطة','فطور ممتد ووقت نوعي مع الأسرة','08:30 – 10:30'],
-        ['قراءة سورة الكهف','قراءة سورة الكهف والاستعداد لصلاة الجمعة','10:30 – 11:30'],
-        ['صلاة الجمعة','يتبع توقيت صلاة الجمعة محليًا؛ التوجه للمسجد قبل الموعد بـ10 دقائق','موعد الصلاة'],
-        ['غداء عائلي','غداء ووقت عائلي هادئ','13:30 – 15:00'],
-        ['قراءة كتاب','جلسة قراءة مركزة','15:00 – 16:00'],
-        ['البحر والنشاط العائلي','الأطفال بالدراجات وأنت جري خفيف؛ العودة قبل غروب الشمس','16:00 – الغروب'],
-        ['الاستحمام والاسترخاء','العودة للمنزل والاستحمام','بعد الغروب'],
-        ['فيلم أو مسلسل','وقت ترفيهي مع العائلة','20:00 – 23:30'],
-        ['النوم','النوم الساعة 00:00 والاستيقاظ السبت الساعة 08:00','00:00 – 08:00']
+        ['🌿 الجمعة يوم مفتوح','خفف الإيقاع اليوم. استمتع بالوقت بلا قائمة مهام ولا ضغط إنجاز.','مرن – مرن'],
+        ['📖 سورة الكهف','اجعل قراءة سورة الكهف محطة هادئة في يوم الجمعة.','مرن – مرن'],
+        ['🤝 صلة الأصدقاء','تواصل مع صديق، اسأل عنه، أو اجتمع بمن تحب؛ العلاقات تحتاج حضورًا مستمرًا.','مرن – مرن'],
+        ['❤️ العائلة','اقترب أكثر من أفراد العائلة: حديث هادئ، زيارة، جلسة مشتركة أو لحظة اهتمام حقيقية.','مرن – مرن'],
+        ['👨‍👩‍👧‍👦 الأطفال والأنشطة','نزهة مع الأطفال، دراجات، بحر، حديقة، أو نشاط منزلي ممتع يصنع ذكرى مشتركة.','مرن – مرن']
       ];
       var saturdayHabits=[
-        ['الاستيقاظ والصلاة','بداية هادئة ثم الاستعداد للنادي','08:00 – 08:30'],
-        ['النادي','تنفيذ تمرين السبت حسب الخطة','08:30 – 09:45'],
-        ['فطور عائلي','العودة من النادي وفطور مع العائلة','10:00 – 11:30'],
-        ['استراحة الظهر','راحة واسترخاء','12:00 – 13:30'],
-        ['يوم مفتوح','وقت مرن مع العائلة أو الأصدقاء','13:30 – 18:00'],
-        ['قراءة كتاب','جلسة قراءة هادئة','18:00 – 18:45'],
-        ['مراجعة الأسبوع','مراجعة ما تم إنجازه وما يحتاج إلى تصحيح','18:45 – 19:30'],
-        ['تحديث الأسبوع القادم','إضافة وتصحيح وتحديث برنامج الأسبوع القادم','19:30 – 20:15'],
-        ['وقت عائلي مسائي','عشاء ووقت مفتوح مع الأسرة','20:15 – 22:30'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد لأسبوع جديد','22:30 – 23:00']
+        ['🌤️ السبت يوم مفتوح','ابدأ الأسبوع بهدوء ومرونة؛ لا تجعل التخطيط يسرق منك الحياة.','مرن – مرن'],
+        ['🧭 مراجعة Mazen OS','راجع التطبيق وما نجح خلال الأسبوع، وسجل الملاحظات والتحسينات للأسبوع القادم.','مرن – مرن'],
+        ['🎯 تحضير IELTS — ساعتان','خصص ساعتين خلال اليوم لتدريب IELTS: مهارة أو اختبار تجريبي مع مراجعة الأخطاء.','ساعتان – مرنتان'],
+        ['✍️ كتابة أو تصميم محتوى تدريبي','من 16:00 إلى 18:30: كتابة مقال، أو إعداد وتطوير حقيبة تدريبية، أو العمل على محتوى معرفي طويل المدى.','16:00 – 18:30'],
+        ['🤝 العائلة والأصدقاء','اترك بقية اليوم مفتوحًا للعائلة أو الأصدقاء والأنشطة التي تعيد لك الطاقة.','مرن – مرن']
       ];
       function habitsForDate(now){
         if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
@@ -162,7 +142,7 @@
       }
       var habits=habitsForDate(new Date());
       var days=[
-        {label:'السبت',title:'قوة الجزء السفلي',goal:'القوة ودعم أداء الملاكمة',meta:'75 دقيقة • Strain 12–14',items:[['Back Squat','4 × 5','https://www.youtube.com/watch?v=dW5-C1fsMjk'],['Romanian Deadlift','3 × 8','https://www.youtube.com/watch?v=SE-2Y-3a1pY'],['Bulgarian Split Squat','3 × 10 لكل رجل','https://www.youtube.com/watch?v=2C-uNgKwPLE'],['Walking Lunges','3 × 12','https://www.youtube.com/watch?v=vni4lElTvsY'],['Front Plank','3 × 45 ثانية','https://www.youtube.com/watch?v=pSHjTRCQxIw'],['Side Plank','3 × 30 ثانية','https://www.youtube.com/watch?v=K2VljzCC16g'],['Zone 2','20 دقيقة','https://www.youtube.com/results?search_query=peter+attia+zone+2']]},
+        {label:'السبت',title:'يوم مفتوح',goal:'راحة ومرونة واستعداد للأسبوع',meta:'بدون تمرين',items:[]},
         {label:'الأحد',title:'تقنية الملاكمة',goal:'المهارة والدقة والدفاع',meta:'75 دقيقة • Strain 14–16',items:[['Jump Rope','5 دقائق','https://www.youtube.com/results?search_query=FightTips+jump+rope'],['Footwork','5 جولات','https://www.youtube.com/results?search_query=Precision+Striking+boxing+footwork'],['Shadow Boxing','3 جولات','https://www.youtube.com/results?search_query=Precision+Striking+shadow+boxing'],['Heavy Bag','6 جولات','https://www.youtube.com/results?search_query=FightTips+heavy+bag'],['Defense Drills','3 جولات','https://www.youtube.com/results?search_query=FightTips+boxing+defense']]},
         {label:'الإثنين',title:'قوة الجزء العلوي',goal:'القوة الوظيفية وثبات الكتفين',meta:'75 دقيقة • Strain 12–14',items:[['Bench Press','4 × 5','https://www.youtube.com/results?search_query=Jeff+Nippard+bench+press'],['Pull-Ups','4 مجموعات','https://www.youtube.com/results?search_query=Jeff+Nippard+pull+ups'],['Overhead Press','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+overhead+press'],['Barbell Row','3 × 8','https://www.youtube.com/results?search_query=Jeff+Nippard+barbell+row'],['Farmer Carry','3 × 30 متر','https://www.youtube.com/results?search_query=farmer+carry+technique']]},
         {label:'الثلاثاء',title:'أداء الملاكمة',goal:'التحمل القتالي تحت الضغط',meta:'75 دقيقة • Strain 15–17',items:[['Footwork','4 جولات','https://www.youtube.com/results?search_query=boxing+footwork+drills'],['Heavy Bag','8 جولات','https://www.youtube.com/results?search_query=boxing+heavy+bag+conditioning'],['HIIT','6–8 فترات','https://www.youtube.com/results?search_query=boxing+HIIT+workout'],['Sparring','حسب التعافي','https://www.youtube.com/results?search_query=boxing+sparring+fundamentals'],['Cool Down','10 دقائق','https://www.youtube.com/results?search_query=boxing+cool+down']]},
@@ -175,12 +155,17 @@
       function weekStartSaturday(date){var d=new Date(date.getFullYear(),date.getMonth(),date.getDate());var back=(d.getDay()+1)%7;d.setDate(d.getDate()-back);return d}
       function habitsForSpecificDate(date){return habitsForDate(date)}
       function dailyProgressForDate(date){
+        if(date.getDay()===5||date.getDay()===6){return null}
         var key='mazenOSProgressV2:'+localDateKey(date);var state=null;
         try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
-        var total=habitsForSpecificDate(date).length;
+        var dayHabits=habitsForSpecificDate(date);var total=dayHabits.length;
         if(!state||!Array.isArray(state.habitState)||state.habitState.length!==total){return 0}
-        var done=0;for(var x=0;x<state.habitState.length;x++){if(state.habitState[x]){done++}}
-        return total?Math.round(done/total*100):0;
+        var workoutHabitIndex=-1;for(var hi=0;hi<dayHabits.length;hi++){if(dayHabits[hi][0]==='الرياضة'||dayHabits[hi][0]==='النادي'){workoutHabitIndex=hi;break}}
+        var workoutIndex=dayMap[date.getDay()];var workoutItems=days[workoutIndex].items;var completedWorkoutItems=0;
+        if(state&&Array.isArray(state.workoutState)&&Array.isArray(state.workoutState[workoutIndex])){for(var wi=0;wi<workoutItems.length;wi++){if(state.workoutState[workoutIndex][wi]){completedWorkoutItems++}}}
+        var workoutFraction=workoutItems.length?completedWorkoutItems/workoutItems.length:0;var score=0;
+        for(var x=0;x<state.habitState.length;x++){if(x===workoutHabitIndex){score+=workoutFraction}else if(state.habitState[x]){score+=1}}
+        return total?Math.round(score/total*100):0;
       }
       function savedHabitsForDate(date){
         var list=habitsForSpecificDate(date);var state=null;
@@ -202,15 +187,15 @@
       }
       function renderWeeklyProgress(){
         var labels=['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
-        var start=weekStartSaturday(new Date());var box=el('mz-week-days');box.innerHTML='';var total=0;
+        var start=weekStartSaturday(new Date());var box=el('mz-week-days');box.innerHTML='';var total=0;var scoredDays=0;
         for(var w=0;w<7;w++){
-          var date=new Date(start);date.setDate(start.getDate()+w);var pct=dailyProgressForDate(date);total+=pct;
-          var statusClass=pct>90?' mz-status-green':(pct>=70?' mz-status-yellow':' mz-status-red');
-          var card=document.createElement('button');card.type='button';card.className='mz-week-day'+statusClass+(localDateKey(date)===localDateKey(selectedDashboardDate)?' active':'');card.innerHTML='<strong>'+labels[w]+'</strong><span>'+pct+'%</span>';card.setAttribute('aria-label','عرض بيانات '+labels[w]);
+          var date=new Date(start);date.setDate(start.getDate()+w);var pct=dailyProgressForDate(date);if(pct!==null){total+=pct;scoredDays++}
+          var statusClass=pct===null?'':(pct>90?' mz-status-green':(pct>=70?' mz-status-yellow':' mz-status-red'));
+          var card=document.createElement('button');card.type='button';card.className='mz-week-day'+statusClass+(localDateKey(date)===localDateKey(selectedDashboardDate)?' active':'');card.innerHTML='<strong>'+labels[w]+'</strong><span>'+(pct===null?'مفتوح':pct+'%')+'</span>';card.setAttribute('aria-label','عرض بيانات '+labels[w]);
           (function(chosenDate){card.addEventListener('click',function(){openDayFromWeek(chosenDate)})})(date);
           box.appendChild(card);
         }
-        var average=Math.round(total/7);var end=new Date(start);end.setDate(start.getDate()+6);var weekClass=average>90?'mz-status-green':(average>=70?'mz-status-yellow':'mz-status-red');
+        var average=scoredDays?Math.round(total/scoredDays):0;var end=new Date(start);end.setDate(start.getDate()+6);var weekClass=average>90?'mz-status-green':(average>=70?'mz-status-yellow':'mz-status-red');
         el('mz-week-score').textContent=average+'%';el('mz-week-bar').style.width=average+'%';
         function formatGregorianDate(date){return String(date.getDate()).padStart(2,'0')+'/'+String(date.getMonth()+1).padStart(2,'0')+'/'+date.getFullYear()}
         el('mz-week-range').textContent='من '+formatGregorianDate(start)+' إلى '+formatGregorianDate(end);
@@ -242,9 +227,14 @@
         }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
       }
       function refreshProgress(){
-        var completed=0;for(var h=0;h<habitState.length;h++){if(habitState[h]){completed++}}
-        var percent=Math.round(completed/habitState.length*100);
-        el('mz-life-label').textContent=completed+' من '+habits.length+' عادات';
+        if(selectedDashboardDate.getDay()===5||selectedDashboardDate.getDay()===6){el('mz-life-label').textContent='يوم مفتوح — بلا تقييم';el('mz-life-bar').style.width='0%';el('mz-dashboard-progress').textContent='يوم مفتوح';return}
+        var workoutHabitIndex=-1;for(var hi=0;hi<habits.length;hi++){if(habits[hi][0]==='الرياضة'||habits[hi][0]==='النادي'){workoutHabitIndex=hi;break}}
+        var dayWorkoutIndex=dayMap[selectedDashboardDate.getDay()];var workoutItems=days[dayWorkoutIndex].items;var completedWorkoutItems=0;
+        for(var wi=0;wi<workoutItems.length;wi++){if(workoutState[dayWorkoutIndex]&&workoutState[dayWorkoutIndex][wi]){completedWorkoutItems++}}
+        var workoutFraction=workoutItems.length?completedWorkoutItems/workoutItems.length:0;var score=0;var completed=0;
+        for(var h=0;h<habitState.length;h++){if(h===workoutHabitIndex){score+=workoutFraction;if(workoutFraction===1){completed++}}else if(habitState[h]){score+=1;completed++}}
+        var percent=habitState.length?Math.round(score/habitState.length*100):0;
+        el('mz-life-label').textContent=completed+' من '+habits.length+' عادات • التمرين '+Math.round(workoutFraction*100)+'%';
         el('mz-life-bar').style.width=percent+'%';
         el('mz-dashboard-progress').textContent=percent+'%';
       }
@@ -252,10 +242,8 @@
       function developmentSession(now){
         var day=now.getDay();
         if(day===5){return ['يوم الجمعة العائلي','عبادة، عائلة، قراءة ونشاط خارجي']}
-        if(day===6){return ['مراجعة الأسبوع','قراءة، تصحيح وتحديث برنامج الأسبوع القادم']}
-        if(day===6||day===1||day===3){return ['الإنجليزية الأكاديمية','قراءة أكاديمية، مفردات، كتابة أو استماع']}
-        if(day===0||day===2||day===4){return ['الذكاء الاصطناعي','تعلم أداة أو مفهوم وتطبيقه عمليًا']}
-        return ['مراجعة أسبوعية وتخطيط','تقييم الأسبوع وتحديد أولويات الأسبوع القادم'];
+        if(day===6){return ['IELTS + مراجعة الأسبوع','تمرين IELTS أسبوعي مع مراجعة التقدم وتحديث الأسبوع القادم']}
+        return ['الذكاء الاصطناعي','جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'];
       }
       function currentHabitIndex(now){
         var value=now.getHours()*60+now.getMinutes();
@@ -269,7 +257,7 @@
           for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
           return -1;
         }
-        var ranges=[[345,370],[390,465],[510,900],[900,1020],[1020,1110],[1110,1140],[1140,1200],[1200,1290],[1290,1320],[1320,1785]];
+        var ranges=[[360,390],[390,465],[510,900],[930,1020],[1020,1110],[1110,1155],[1155,1215],[1215,1290],[1290,1320]];
         for(var r=0;r<ranges.length;r++){
           var start=ranges[r][0],end=ranges[r][1];
           if(end>1440){if(value>=start||value<end-1440){return r}}
@@ -278,6 +266,8 @@
         return -1;
       }
       function greeting(now){var h=now.getHours();return h<12?'صباح الخير يا مازن':h<18?'مساء الخير يا مازن':'مساء الخير يا مازن'}
+      function habitEndMinutes(h){var parts=h[2].split(' – ');if(parts.length!==2||!/^[0-9]{2}:[0-9]{2}$/.test(parts[1])){return null}return minutes(parts[1])}
+      function isHabitExpired(h,index){if(localDateKey(selectedDashboardDate)!==localDateKey(new Date())){return false}if(index===currentHabit){return false}var end=habitEndMinutes(h);if(end===null){return false}var now=new Date();var value=now.getHours()*60+now.getMinutes();return value>=end}
       function updateDashboard(now,session){
         var selected=selectedDashboardDate||now;var selectedData=savedHabitsForDate(selected);var selectedHabits=selectedData.habits;var selectedState=selectedData.state;var selectedWorkoutIndex=dayMap[selected.getDay()];var selectedProgress=dailyProgressForDate(selected);var isToday=localDateKey(selected)===localDateKey(new Date());var firstIncomplete=-1;
         for(var z=0;z<selectedState.length;z++){if(!selectedState[z]){firstIncomplete=z;break}}
@@ -288,7 +278,7 @@
         el('mz-dashboard-workout-meta').textContent=days[selectedWorkoutIndex].meta;
         el('mz-dashboard-development').textContent=session[0];
         el('mz-dashboard-development-note').textContent=session[1];
-        el('mz-dashboard-progress').textContent=selectedProgress+'%';
+        el('mz-dashboard-progress').textContent=selectedProgress===null?'يوم مفتوح':selectedProgress+'%';
         if(isToday){
           el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن';
           var nextIndex=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:0;
@@ -300,7 +290,7 @@
         renderWeeklyProgress();
       }
       function updateSmartFlow(){
-        var now=new Date();var session=developmentSession(now);habits[6][0]='جلسة التطوير: '+session[0];habits[6][1]=session[1];currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
+        var now=new Date();var session=developmentSession(now);if(now.getDay()!==5&&now.getDay()!==6&&habits.length>6){habits[6][0]='جلسة التطوير: الذكاء الاصطناعي';habits[6][1]='جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'}currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن أو انتقال بين المهام';
         var next=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:(currentHabit===habits.length-1?0:0);
         el('mz-next-task').textContent=habits[next][0]+' • '+habits[next][2];
@@ -308,12 +298,15 @@
       }
       function renderHabits(){
         var box=el('mz-habits');box.innerHTML='';var done=0;
+        if(selectedDashboardDate.getDay()===5||selectedDashboardDate.getDay()===6){habits.forEach(function(h){var row=document.createElement('div');row.className='mz-row';var spacer=document.createElement('span');spacer.textContent='';var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';var time=document.createElement('time');time.textContent=h[2];row.appendChild(spacer);row.appendChild(label);row.appendChild(time);box.appendChild(row)});refreshProgress();return}
         habits.forEach(function(h,index){
-          var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'');
+          var expired=isHabitExpired(h,index)&&!habitState[index];var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'')+(expired?' mz-expired':'');
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
+          var isWorkoutHabit=h[0]==='الرياضة'||h[0]==='النادي';if(isWorkoutHabit){var workoutIndexForHabit=dayMap[selectedDashboardDate.getDay()];var allWorkoutDone=workoutState[workoutIndexForHabit]&&workoutState[workoutIndexForHabit].length>0&&workoutState[workoutIndexForHabit].every(Boolean);check.checked=allWorkoutDone;check.disabled=true;check.title='تكتمل تلقائيًا بعد إنهاء جميع تمارين اليوم';if(allWorkoutDone){label.className='mz-done';done++}}else if(expired){check.disabled=true;check.title='انتهى وقت هذه المهمة'}
           check.addEventListener('change',function(){
+            if(isWorkoutHabit){return}
             habitState[index]=check.checked;
             saveState();
             renderHabits();
@@ -334,7 +327,7 @@
           var row=document.createElement('div');row.className='mz-row';var check=document.createElement('input');check.type='checkbox';check.checked=workoutState[active][index];
           var label=document.createElement('label');label.innerHTML='<strong>'+item[0]+'</strong><small>'+item[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var link=document.createElement('a');link.href=item[2];link.target='_blank';link.rel='noopener noreferrer';link.textContent='🎥 الفيديو';
-          check.addEventListener('change',function(){workoutState[active][index]=check.checked;saveState();renderTraining()});row.appendChild(check);row.appendChild(label);row.appendChild(link);list.appendChild(row);
+          check.addEventListener('change',function(){workoutState[active][index]=check.checked;var workoutHabitIndex=-1;for(var hi=0;hi<habits.length;hi++){if(habits[hi][0]==='الرياضة'||habits[hi][0]==='النادي'){workoutHabitIndex=hi;break}}if(workoutHabitIndex>=0&&active===dayMap[selectedDashboardDate.getDay()]){habitState[workoutHabitIndex]=workoutState[active].every(Boolean)}saveState();renderTraining();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});row.appendChild(check);row.appendChild(label);row.appendChild(link);list.appendChild(row);
         });
         el('mz-work-label').textContent=done+' من '+day.items.length+' تمارين';el('mz-work-bar').style.width=Math.round(done/day.items.length*100)+'%';
       }
@@ -350,5 +343,3 @@
     })();
   </script>
 </div>
-</body>
-</html>
