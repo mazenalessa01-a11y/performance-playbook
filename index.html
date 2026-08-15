@@ -278,6 +278,14 @@
       function greeting(now){var h=now.getHours();return h<12?'صباح الخير يا مازن':h<18?'مساء الخير يا مازن':'مساء الخير يا مازن'}
       function habitEndMinutes(h){var parts=h[2].split(' – ');if(parts.length!==2||!/^[0-9]{2}:[0-9]{2}$/.test(parts[1])){return null}return minutes(parts[1])}
       function isHabitExpired(h,index){if(localDateKey(selectedDashboardDate)!==localDateKey(new Date())){return false}if(index===currentHabit){return false}var end=habitEndMinutes(h);if(end===null){return false}var now=new Date();var value=now.getHours()*60+now.getMinutes();return value>=end}
+      function nextUpcomingHabitIndex(now,habitList){
+        var value=now.getHours()*60+now.getMinutes();
+        for(var ui=0;ui<habitList.length;ui++){
+          var range=habitTimeRange(habitList[ui]);
+          if(range&&value<range.start){return ui}
+        }
+        return -1;
+      }
       function updateDashboard(now,session){
         var selected=selectedDashboardDate||now;var selectedData=savedHabitsForDate(selected);var selectedHabits=selectedData.habits;var selectedState=selectedData.state;var selectedWorkoutIndex=dayMap[selected.getDay()];var selectedProgress=dailyProgressForDate(selected);var isToday=localDateKey(selected)===localDateKey(new Date());var firstIncomplete=-1;
         for(var z=0;z<selectedState.length;z++){if(!selectedState[z]){firstIncomplete=z;break}}
@@ -293,9 +301,15 @@
         el('mz-dashboard-development-note').textContent=session[1];
         el('mz-dashboard-progress').textContent=selectedProgress===null?'يوم مفتوح':selectedProgress+'%';
         if(isToday){
-          el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن';
-          var nextIndex=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:0;
-          el('mz-dashboard-next').textContent='التالي: '+habits[nextIndex][0]+' • '+habits[nextIndex][2];
+          var upcomingIndex=currentHabit>=0?-1:nextUpcomingHabitIndex(now,habits);
+          el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:(upcomingIndex>=0?'وقت مرن':'انتهت مهام اليوم');
+          if(currentHabit>=0&&currentHabit<habits.length-1){
+            el('mz-dashboard-next').textContent='التالي: '+habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2];
+          }else if(upcomingIndex>=0){
+            el('mz-dashboard-next').textContent='التالي: '+habits[upcomingIndex][0]+' • '+habits[upcomingIndex][2];
+          }else{
+            el('mz-dashboard-next').textContent='لا توجد مهام مجدولة لاحقًا اليوم';
+          }
         }else{
           el('mz-dashboard-current').textContent=firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'تم إنجاز جميع مهام اليوم';
           el('mz-dashboard-next').textContent=firstIncomplete>=0?'الوقت: '+selectedHabits[firstIncomplete][2]:'نسبة الإنجاز: 100%';
@@ -304,9 +318,11 @@
       }
       function updateSmartFlow(){
         var now=new Date();var session=developmentSession(now);if(now.getDay()!==5&&now.getDay()!==6&&habits.length>6){habits[6][0]='جلسة التطوير: الذكاء الاصطناعي';habits[6][1]='جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'}currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
-        el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:'وقت مرن أو انتقال بين المهام';
-        var next=currentHabit>=0&&currentHabit<habits.length-1?currentHabit+1:(currentHabit===habits.length-1?0:0);
-        el('mz-next-task').textContent=habits[next][0]+' • '+habits[next][2];
+        var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
+        el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
+        if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
+        else if(upcoming>=0){el('mz-next-task').textContent=habits[upcoming][0]+' • '+habits[upcoming][2]}
+        else{el('mz-next-task').textContent='لا توجد مهام مجدولة لاحقًا اليوم'}
         renderHabits();updateDashboard(now,session);
       }
       function renderHabits(){
