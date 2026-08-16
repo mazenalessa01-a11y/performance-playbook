@@ -320,7 +320,7 @@
         renderWeeklyProgress();
       }
       function updateSmartFlow(){
-        var now=new Date();var session=developmentSession(now);if(now.getDay()!==5&&now.getDay()!==6&&habits.length>6){habits[6][0]='جلسة التطوير: الذكاء الاصطناعي';habits[6][1]='جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'}currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
+        var now=new Date();var session=developmentSession(now);currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
         el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
         if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
