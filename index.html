@@ -125,15 +125,15 @@
       if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./service-worker.js').then(function(registration){console.log('Mazen OS Service Worker registered:',registration.scope)}).catch(function(error){console.error('Service Worker registration failed:',error)})})}
       var root=document.getElementById('maz-os');
       var weekdayHabits=[
-        ['الاستيقاظ والصلاة والقرآن','صلاة الفجر، الأذكار وصفحتان من القرآن','06:00 – 06:30'],
-        ['الرياضة','تمرين اليوم حسب الخطة','06:30 – 07:45'],
+        ['الاستيقاظ والصلاة والفطور','بداية هادئة لليوم مع الصلاة والفطور والاستعداد','07:30 – 08:30'],
         ['العمل','الأولويات المهنية','08:30 – 15:00'],
-        ['وقت العائلة','وقت للعائلة بعد العمل','15:30 – 17:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','09:30 – 10:30'],
+        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العمل','15:30 – 17:00'],
         ['الدراسة الأكاديمية','الماجستير أو البحث العلمي','17:00 – 18:30'],
-        ['الراحة وصلاة المغرب','استراحة تشمل صلاة المغرب','18:30 – 19:15'],
-        ['جلسة التطوير: الذكاء الاصطناعي','تعلم أداة أو مفهوم وتطبيقه عمليًا','19:15 – 20:15'],
-        ['وقت عائلي مسائي','وقت مرن مع العائلة والعشاء','20:15 – 21:30'],
-        ['الإنجليزية اليومية','ممارسة الإنجليزية عبر القراءة، مفردات جديدة، تطبيق الكلمات، والتحدث في العمل أو الجامعة','21:30 – 22:00']
+        ['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
+        ['وقت عائلي مسائي','العشاء ووقت مرن مع العائلة','20:30 – 22:30'],
+        ['القراءة','قراءة هادئة قبل النوم، ويفضل أن تشمل ممارسة الإنجليزية والمفردات','22:30 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
       var thursdayHabits=weekdayHabits.map(function(h){return h.slice()});
       var fridayHabits=[
@@ -238,6 +238,7 @@
           localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,workoutState:workoutState,updatedAt:Date.now()}));
           el('mz-save-status').textContent='تم الحفظ الآن';
           renderWeeklyProgress();
+          syncPushSchedule();
           return true;
         }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
       }
@@ -255,6 +256,8 @@
       }
       function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
       var notifiedKey='mazenOSNotifications:'+localDateKey(new Date());
+      var PUSH_SCHEDULE_ENDPOINT='https://ffbqnhdmfcgsddjsovhk.supabase.co/functions/v1/sync-push-schedule';
+      function syncPushSchedule(){try{var savedPush=null;try{savedPush=JSON.parse(localStorage.getItem('mazenOSPushSubscription'))}catch(e){}var todayList=habitsForDate(new Date());var payload={date:localDateKey(new Date()),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:todayList.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(habitState[index])}})};fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){})}catch(e){}}
       function notificationState(){try{return JSON.parse(localStorage.getItem(notifiedKey))||{}}catch(e){return {}}}
       function saveNotificationState(state){try{localStorage.setItem(notifiedKey,JSON.stringify(state))}catch(e){}}
       function showNotification(title,body){if(!('Notification' in window)||Notification.permission!=='granted'){return}try{new Notification(title,{body:body,icon:'',badge:''})}catch(e){}}
@@ -278,7 +281,7 @@
           for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
           return -1;
         }
-        var ranges=[[360,390],[390,465],[510,900],[930,1020],[1020,1110],[1110,1155],[1155,1215],[1215,1290],[1290,1320]];
+        var ranges=[[450,510],[510,570],[570,630],[930,1020],[1020,1110],[1140,1230],[1230,1350],[1350,1380],[1380,1410]];
         for(var r=0;r<ranges.length;r++){
           var start=ranges[r][0],end=ranges[r][1];
           if(end>1440){if(value>=start||value<end-1440){return r}}
@@ -328,7 +331,7 @@
         renderWeeklyProgress();
       }
       function updateSmartFlow(){
-        var now=new Date();var session=developmentSession(now);if(now.getDay()!==5&&now.getDay()!==6&&habits.length>6){habits[6][0]='جلسة التطوير: الذكاء الاصطناعي';habits[6][1]='جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'}currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
+        var now=new Date();var session=developmentSession(now);currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
         el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
         if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
@@ -388,7 +391,7 @@
       el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});
       el('mz-reset-work').addEventListener('click',function(){workoutState[active]=workoutState[active].map(function(){return false});saveState();renderTraining()});
       var now=new Date();var names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];var dayMap=[1,2,3,4,5,6,0];active=dayMap[now.getDay()];el('mz-date').textContent=names[now.getDay()]+'، '+now.getDate()+'/'+(now.getMonth()+1);
-      updateSmartFlow();renderTraining();refreshProgress();renderWeeklyProgress();checkTaskNotifications();setInterval(function(){updateSmartFlow();checkTaskNotifications()},60000);
+      updateSmartFlow();renderTraining();refreshProgress();renderWeeklyProgress();checkTaskNotifications();syncPushSchedule();setInterval(function(){updateSmartFlow();checkTaskNotifications();syncPushSchedule()},60000);
     })();
   </script>
 </div>
