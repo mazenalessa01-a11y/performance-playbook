@@ -109,20 +109,29 @@
 
   <script>
     (function(){
+      /* PWA bootstrap: يضيف تعريف التطبيق إلى الصفحة الحالية.
+         عند النشر على GitHub يجب إنشاء manifest.json في نفس مجلد index.html. */
+      var pwaManifest=document.querySelector('link[rel="manifest"]');
+      if(!pwaManifest){pwaManifest=document.createElement('link');pwaManifest.rel='manifest';pwaManifest.href='manifest.json';document.head.appendChild(pwaManifest)}
+      var themeMeta=document.querySelector('meta[name="theme-color"]');
+      if(!themeMeta){themeMeta=document.createElement('meta');themeMeta.name='theme-color';document.head.appendChild(themeMeta)}
+      themeMeta.content='#0c2749';
+      document.title='Mazen OS';
       var viewportMeta=document.querySelector('meta[name="viewport"]');
       if(!viewportMeta){viewportMeta=document.createElement('meta');viewportMeta.name='viewport';document.head.appendChild(viewportMeta)}
       viewportMeta.content='width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover';
+      if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./service-worker.js').then(function(registration){console.log('Mazen OS Service Worker registered:',registration.scope)}).catch(function(error){console.error('Service Worker registration failed:',error)})})}
       var root=document.getElementById('maz-os');
       var weekdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','الاستيقاظ، الصلاة، الفطور والاستعداد لليوم','07:30 – 08:30'],
+        ['الاستيقاظ والصلاة والقرآن','صلاة الفجر، الأذكار وصفحتان من القرآن','06:00 – 06:30'],
+        ['الرياضة','تمرين اليوم حسب الخطة','06:30 – 07:45'],
         ['العمل','الأولويات المهنية','08:30 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','09:30 – 10:30'],
-        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العمل','15:30 – 17:00'],
+        ['وقت العائلة','وقت للعائلة بعد العمل','15:30 – 17:00'],
         ['الدراسة الأكاديمية','الماجستير أو البحث العلمي','17:00 – 18:30'],
-        ['استراحة واستعداد للتمرين','وقت مرن للصلاة والراحة والاستعداد','18:30 – 19:00'],
-        ['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
-        ['وقت عائلي مسائي','العائلة والعشاء ووقت شخصي مرن','20:30 – 22:30'],
-        ['القراءة','قراءة هادئة قبل النوم','22:30 – 23:00']
+        ['الراحة وصلاة المغرب','استراحة تشمل صلاة المغرب','18:30 – 19:15'],
+        ['جلسة التطوير: الذكاء الاصطناعي','تعلم أداة أو مفهوم وتطبيقه عمليًا','19:15 – 20:15'],
+        ['وقت عائلي مسائي','وقت مرن مع العائلة والعشاء','20:15 – 21:30'],
+        ['الإنجليزية اليومية','ممارسة الإنجليزية عبر القراءة، مفردات جديدة، تطبيق الكلمات، والتحدث في العمل أو الجامعة','21:30 – 22:00']
       ];
       var thursdayHabits=weekdayHabits.map(function(h){return h.slice()});
       var fridayHabits=[
@@ -267,11 +276,8 @@
           for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
           return -1;
         }
-        // جلسة التطوير تقع داخل وقت العمل؛ نعطيها الأولوية كالمهمة الحالية بين 09:30 و10:30.
-        if(value>=570&&value<630){return 2}
-        var ranges=[[450,510],[510,900],null,[930,1020],[1020,1110],[1110,1140],[1140,1230],[1230,1350],[1350,1380]];
+        var ranges=[[360,390],[390,465],[510,900],[930,1020],[1020,1110],[1110,1155],[1155,1215],[1215,1290],[1290,1320]];
         for(var r=0;r<ranges.length;r++){
-          if(!ranges[r]){continue}
           var start=ranges[r][0],end=ranges[r][1];
           if(end>1440){if(value>=start||value<end-1440){return r}}
           else if(value>=start&&value<end){return r}
@@ -320,7 +326,7 @@
         renderWeeklyProgress();
       }
       function updateSmartFlow(){
-        var now=new Date();var session=developmentSession(now);currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
+        var now=new Date();var session=developmentSession(now);if(now.getDay()!==5&&now.getDay()!==6&&habits.length>6){habits[6][0]='جلسة التطوير: الذكاء الاصطناعي';habits[6][1]='جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'}currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
         el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
         if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
