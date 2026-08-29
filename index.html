@@ -17,7 +17,7 @@
     .mz-progress{height:12px;background:#e5e8ee;border-radius:999px;overflow:hidden;margin:10px 0 16px}.mz-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a52e,#35a47c)}
     .mz-list{display:grid;gap:12px}.mz-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid #e2e7ee;border-radius:18px;padding:15px;background:linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%);box-shadow:0 5px 16px rgba(18,41,75,.045)}
     .mz-row input{width:22px;height:22px;accent-color:#35a47c}.mz-row strong{display:block}.mz-row small{color:#657083}.mz-row time{font-size:13px;font-weight:700;color:#b27c00;white-space:nowrap;direction:rtl;unicode-bidi:isolate}
-    .mz-row input:disabled{cursor:not-allowed;opacity:.45}.mz-row.mz-expired{opacity:.58;background:#f3f4f6}.mz-row.mz-expired time{color:#8b94a3}.mz-row.mz-expired small::after{content:' • انتهى الوقت';color:#b04a4a;font-weight:700}
+    .mz-row input:disabled{cursor:not-allowed;opacity:.45}.mz-row.mz-expired{background:#f8fafc}.mz-row.mz-expired time{color:#8b94a3}.mz-row.mz-expired small::after{content:' • انتهى الوقت ويمكن تسجيل الإنجاز';color:#6b7280;font-weight:700}
     .mz-row.mz-current{border-color:#d9a52e;background:#fff8e5;box-shadow:0 0 0 2px rgba(217,165,46,.12)}
     .mz-row a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 10px;border-radius:10px;background:#173a63;color:#fff;text-decoration:none;white-space:nowrap}
     .mz-done{opacity:.55;text-decoration:line-through}.mz-hidden{display:none}.mz-note{margin:12px 0;padding:11px;border-radius:12px;background:#edf7f2;color:#245644}.mz-whoop{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mz-whoop button{min-height:42px;border:1px solid #d9dde5;background:#fff;border-radius:11px;padding:8px 10px;cursor:pointer}.mz-whoop button.active{outline:3px solid #d9a52e}
@@ -70,10 +70,9 @@
       <div class="mz-head"><div><h2>لوحة التحكم</h2><p>ملخص اليوم وأهم الأولويات</p></div><span class="mz-chip" id="mz-dashboard-date"></span></div>
       <div class="mz-dashboard">
         <div class="mz-dash-card"><h3>📅 اليوم</h3><div class="mz-dash-value" id="mz-dashboard-day">—</div><p id="mz-dashboard-focus">—</p></div>
-        <div class="mz-dash-card"><h3>🏃 وقت الرياضة</h3><div class="mz-dash-value" id="mz-dashboard-sport-time">19:00 – 20:30</div><p>فترة زمنية مخصصة للنشاط الرياضي بدون تفاصيل تنفيذية.</p></div>
-        <div class="mz-dash-card"><h3>📚 جلسة التطوير</h3><div class="mz-dash-value" id="mz-dashboard-development">—</div><p id="mz-dashboard-development-note">—</p></div>
+        <div class="mz-dash-card"><h3>🎯 المهمة الحالية</h3><div class="mz-dash-value" id="mz-dashboard-current">—</div></div>
+        <div class="mz-dash-card"><h3>⏭️ المهمة التي بعدها</h3><div class="mz-dash-value" id="mz-dashboard-next">—</div></div>
         <div class="mz-dash-card"><h3>✅ إنجاز اليوم</h3><div class="mz-dash-value" id="mz-dashboard-progress">0%</div><p>تُحدّث تلقائيًا من قائمة يومي</p></div>
-        <div class="mz-dash-card mz-dash-wide"><h3>🎯 المهمة الحالية</h3><div class="mz-dash-value" id="mz-dashboard-current">—</div><p id="mz-dashboard-next">—</p></div>
       </div>
       <div class="mz-week">
         <div class="mz-week-head"><div><h3>📈 تطور الأسبوع</h3><p id="mz-week-range" style="margin:4px 0 0;color:#657083">من السبت إلى الجمعة</p></div><div class="mz-week-score" id="mz-week-score">0%</div></div>
@@ -145,14 +144,19 @@
       var saturdayHabits=[
         ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل الملاحظات والتحسينات للأسبوع القادم.','10:00 – 12:00'],
         ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة.','12:00 – 16:00'],
-        ['✍️ كتابة مقال أو حقيبة تدريبية','جلسة مركزة للكتابة أو إعداد وتطوير حقيبة تدريبية.','17:00 – 18:00'],
-        ['🎯 تحضير IELTS','ساعتان لتدريب IELTS: مهارة أو اختبار تجريبي مع مراجعة الأخطاء.','18:00 – 20:00']
+        ['🎯 تحضير IELTS','جلسة مركزة لتدريب IELTS مع مراجعة الأخطاء.','17:00 – 18:30'],
+        ['🏃 الرياضة','تمرين اليوم حسب الخطة.','19:00 – 20:30'],
+        ['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council.','21:00 – 22:00']
       ];
       function habitsForDate(now){
         if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
         if(now.getDay()===6){return saturdayHabits.map(function(h){return h.slice()})}
         if(now.getDay()===4){return thursdayHabits.map(function(h){return h.slice()})}
-        return weekdayHabits.map(function(h){return h.slice()});
+        var list=weekdayHabits.map(function(h){return h.slice()});
+        if(now.getDay()===1||now.getDay()===3){
+          list[7]=['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council.','21:00 – 22:00'];
+        }
+        return list;
       }
       var habits=habitsForDate(new Date());
       var habitState=[];var currentHabit=-1;var i;var selectedDashboardDate=new Date();
@@ -232,10 +236,33 @@
       var PUSH_SCHEDULE_ENDPOINT='https://ffbqnhdmfcgsddjsovhk.supabase.co/functions/v1/sync-push-schedule';
       function syncPushSchedule(){try{var savedPush=null;try{savedPush=JSON.parse(localStorage.getItem('mazenOSPushSubscription'))}catch(e){}var todayList=habitsForDate(new Date());var payload={date:localDateKey(new Date()),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:todayList.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(habitState[index])}})};fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){})}catch(e){}}
       function notificationState(){try{return JSON.parse(localStorage.getItem(notifiedKey))||{}}catch(e){return {}}}
+      function motivationForTask(title){
+        var t=String(title||'').replace(/^\s*[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0F]+\s*/u,'').trim();
+        var messages={
+          'وقت العائلة والغداء':'استمتع باللحظة، هذا الوقت لا يتكرر ❤️',
+          'وقت عائلي مسائي':'استمتع باللحظة، هذا الوقت لا يتكرر ❤️',
+          'وقت العائلة':'استمتع باللحظة، هذا الوقت لا يتكرر ❤️',
+          'العائلة':'استمتع باللحظة، هذا الوقت لا يتكرر ❤️',
+          'الرياضة':'وقت الحركة 💪 ابدأ فقط، والباقي سيأتي.',
+          'الدراسة الأكاديمية':'خطوة اليوم تقرّبك من الهدف الكبير 🎓',
+          'British Council':'ساعة اليوم تبني طلاقة الغد 🇬🇧',
+          'تحضير IELTS':'كل تدريب اليوم يرفع جاهزيتك للاختبار 🎯',
+          'جلسة التطوير: الذكاء الاصطناعي':'تعلّم شيئًا واحدًا وطبّقه اليوم 🤖',
+          'القراءة':'اختم يومك بفكرة جديدة 📖',
+          'العمل':'ركّز على ما يصنع الأثر اليوم 💼',
+          'صلاة الجمعة وقراءة سورة الكهف':'وقت للسكينة والتجدد 🕌',
+          'التواصل الاجتماعي':'العلاقات القوية تُبنى بالاهتمام المستمر 🤝',
+          'مقابلة الأصدقاء':'استمتع بالصحبة واترك العمل خلفك قليلًا 👥',
+          'الاستعداد للنوم':'أغلق يومك بهدوء؛ طاقة الغد تبدأ الليلة 🌙',
+          'الاستيقاظ والصلاة والفطور':'ابدأ يومك بهدوء ووضوح ☀️',
+          'تحديث Mazen OS':'مراجعة بسيطة اليوم تصنع أسبوعًا أوضح 🧭'
+        };
+        return messages[t]||'خصص هذه الفترة لما يهمك، وامنحها حضورك الكامل ✨';
+      }
       function saveNotificationState(state){try{localStorage.setItem(notifiedKey,JSON.stringify(state))}catch(e){}}
       function showNotification(title,body){if(!('Notification' in window)||Notification.permission!=='granted'){return}try{new Notification(title,{body:body,icon:'',badge:''})}catch(e){}}
       function habitTimeRange(h){var parts=h[2].split(' – ');if(parts.length!==2||!/^[0-9]{2}:[0-9]{2}$/.test(parts[0])||!/^[0-9]{2}:[0-9]{2}$/.test(parts[1])){return null}return {start:minutes(parts[0]),end:minutes(parts[1])}}
-      function checkTaskNotifications(){if(!('Notification' in window)||Notification.permission!=='granted'){return}var now=new Date();if(localDateKey(now)!==localDateKey(new Date())){return}var value=now.getHours()*60+now.getMinutes();var state=notificationState();var todayHabits=habitsForDate(now);for(var ni=0;ni<todayHabits.length;ni++){var range=habitTimeRange(todayHabits[ni]);if(!range){continue}var startKey='start-'+ni;var endKey='end-'+ni;var beforeEndKey='beforeEnd-'+ni;if(value>=range.start&&value<range.start+2&&!state[startKey]){showNotification('🎯 حان وقت '+todayHabits[ni][0],todayHabits[ni][2]);state[startKey]=true}if(value>=range.end-10&&value<range.end-8&&!state[beforeEndKey]){showNotification('⏳ بقي 10 دقائق',todayHabits[ni][0]+' ينتهي عند '+todayHabits[ni][2].split(' – ')[1]);state[beforeEndKey]=true}if(value>=range.end&&value<range.end+2&&!state[endKey]){showNotification('انتهى وقت المهمة',todayHabits[ni][0]);state[endKey]=true}}saveNotificationState(state)}
+      function checkTaskNotifications(){if(!('Notification' in window)||Notification.permission!=='granted'){return}var now=new Date();if(localDateKey(now)!==localDateKey(new Date())){return}var value=now.getHours()*60+now.getMinutes();var state=notificationState();var todayHabits=habitsForDate(now);for(var ni=0;ni<todayHabits.length;ni++){var range=habitTimeRange(todayHabits[ni]);if(!range){continue}var beforeStartKey='beforeStart-'+ni;var endKey='end-'+ni;if(value>=range.start-10&&value<range.start-8&&!state[beforeStartKey]){showNotification('⏰ بعد 10 دقائق: '+todayHabits[ni][0],motivationForTask(todayHabits[ni][0]));state[beforeStartKey]=true}if(value>=range.end&&value<range.end+2&&!state[endKey]){showNotification('✅ انتهى وقت '+todayHabits[ni][0],'أحسنت. سجّل إنجازك واستعد للفترة التالية ✨');state[endKey]=true}}saveNotificationState(state)}
       function developmentSession(now){
         var day=now.getDay();
         if(day===5){return ['يوم الجمعة العائلي','عبادة، عائلة، قراءة ونشاط خارجي']}
@@ -250,7 +277,7 @@
           return -1;
         }
         if(now.getDay()===6){
-          var saturdayRanges=[[600,720],[720,960],[1020,1080],[1080,1200]];
+          var saturdayRanges=[[600,720],[720,960],[1020,1110],[1140,1230],[1260,1320]];
           for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
           return -1;
         }
@@ -279,19 +306,16 @@
         el('mz-dashboard-date').textContent=names[selected.getDay()]+'، '+selected.getDate()+'/'+(selected.getMonth()+1);
         el('mz-dashboard-day').textContent=names[selected.getDay()];
         el('mz-dashboard-focus').textContent=isToday&&currentHabit>=0?(currentHabit===3?'العمل':habits[currentHabit][0]):(firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'مكتمل');
-        var sportBlock=selectedHabits.find(function(h){return h[0]==='الرياضة'});el('mz-dashboard-sport-time').textContent=sportBlock?sportBlock[2]:'غير مجدول';
-        el('mz-dashboard-development').textContent=session[0];
-        el('mz-dashboard-development-note').textContent=session[1];
         el('mz-dashboard-progress').textContent=selectedProgress===null?'يوم مفتوح':selectedProgress+'%';
         if(isToday){
           var upcomingIndex=currentHabit>=0?-1:nextUpcomingHabitIndex(now,habits);
           el('mz-dashboard-current').textContent=currentHabit>=0?(currentHabit===3?'العمل':habits[currentHabit][0]):(upcomingIndex>=0?'وقت مرن':'انتهت مهام اليوم');
           if(currentHabit===3){
-            el('mz-dashboard-next').textContent='التالي: '+habits[3][0]+' • '+habits[3][2];
+            el('mz-dashboard-next').textContent=habits[3][0]+' • '+habits[3][2];
           }else if(currentHabit>=0&&currentHabit<habits.length-1){
-            el('mz-dashboard-next').textContent='التالي: '+habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2];
+            el('mz-dashboard-next').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2];
           }else if(upcomingIndex>=0){
-            el('mz-dashboard-next').textContent='التالي: '+habits[upcomingIndex][0]+' • '+habits[upcomingIndex][2];
+            el('mz-dashboard-next').textContent=habits[upcomingIndex][0]+' • '+habits[upcomingIndex][2];
           }else{
             el('mz-dashboard-next').textContent='لا توجد مهام مجدولة لاحقًا اليوم';
           }
@@ -320,7 +344,7 @@
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
-          if(isReadOnlyPast){check.disabled=true;check.title='يمكن الاطلاع على الأيام السابقة دون تعديل'}else if(expired){check.disabled=true;check.title='انتهى وقت هذه المهمة'}
+          if(isReadOnlyPast){check.disabled=true;check.title='يمكن الاطلاع على الأيام السابقة دون تعديل'}
           check.addEventListener('change',function(){
             habitState[index]=check.checked;
             saveState();
