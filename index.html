@@ -1,3 +1,4 @@
+<!-- Mazen OS build: 2026-08-29-1800 -->
 <div id="maz-os" dir="rtl">
   <style>
     #maz-os{background:#f6f2ea;color:#10233c;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:0;min-height:100%;width:100%;max-width:none;overflow-x:hidden;}
@@ -88,7 +89,7 @@
         <div><h3 id="mz-greeting">صباح الخير يا مازن</h3><p>المهمة الحالية: <strong id="mz-current-task">—</strong></p><p>المهمة التالية: <span id="mz-next-task">—</span></p></div>
         <button type="button" id="mz-open-week">عرض الأسبوع</button>
       </div>
-      <strong id="mz-life-label">0 من 10 عادات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div><p id="mz-save-status" style="margin:-6px 0 14px;color:#657083;font-size:13px">يتم الحفظ تلقائيًا على هذا الجهاز</p>
+      <strong id="mz-life-label">0 من 10 فترات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div><p id="mz-save-status" style="margin:-6px 0 14px;color:#657083;font-size:13px">يتم الحفظ تلقائيًا على هذا الجهاز</p>
       <div class="mz-actions" style="margin-top:0;margin-bottom:14px"><button type="button" id="mz-enable-notifications">🔔 تفعيل التذكيرات</button></div>
       <div class="mz-list" id="mz-habits"></div>
       <div class="mz-actions"><button type="button" id="mz-reset-life">إعادة ضبط اليوم</button></div>
@@ -133,14 +134,24 @@
         ['القراءة','قراءة هادئة قبل النوم','22:30 – 23:00'],
         ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
-      var thursdayHabits=weekdayHabits.map(function(h){return h.slice()});
-      var fridayHabits=[
-        ['🌿 الجمعة يوم مفتوح','خفف الإيقاع اليوم. استمتع بالوقت بلا قائمة مهام ولا ضغط إنجاز.','مرن – مرن'],
-        ['📖 سورة الكهف','اجعل قراءة سورة الكهف محطة هادئة في يوم الجمعة.','مرن – مرن'],
-        ['🤝 صلة الأصدقاء','تواصل مع صديق، اسأل عنه، أو اجتمع بمن تحب؛ العلاقات تحتاج حضورًا مستمرًا.','مرن – مرن'],
-        ['❤️ العائلة','اقترب أكثر من أفراد العائلة: حديث هادئ، زيارة، جلسة مشتركة أو لحظة اهتمام حقيقية.','مرن – مرن'],
-        ['👨‍👩‍👧‍👦 الأطفال والأنشطة','نزهة مع الأطفال، دراجات، بحر، حديقة، أو نشاط منزلي ممتع يصنع ذكرى مشتركة.','مرن – مرن']
+
+      var thursdayHabits=[
+        ['الاستيقاظ والصلاة والفطور','بداية هادئة لليوم مع الصلاة والفطور والاستعداد','07:30 – 08:30'],
+        ['العمل','الأولويات المهنية','08:30 – 15:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','09:30 – 10:30'],
+        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العمل','15:30 – 17:00'],
+        ['🌿 مساء الخميس المفتوح','وقت مفتوح بعد العائلة لقضاء مساء الخميس براحة ومرونة','17:00 – 23:59'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','00:00 – 00:30']
       ];
+
+      var fridayHabits=[
+        ['🕌 صلاة الجمعة وقراءة سورة الكهف','صلاة الجمعة وقراءة سورة الكهف بهدوء وخشوع','12:00 – 13:30'],
+        ['❤️ وقت العائلة','وقت عائلي ممتد للغداء والخروج والأنشطة المشتركة','13:30 – 20:00'],
+        ['🤝 التواصل الاجتماعي','ساعة للتواصل وصلة العلاقات','20:00 – 21:00'],
+        ['👥 مقابلة الأصدقاء','وقت للقاء الأصدقاء والاستمتاع بالصحبة','21:00 – 23:59'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','00:00 – 00:30']
+      ];
+
       var saturdayHabits=[
         ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل الملاحظات والتحسينات للأسبوع القادم.','10:00 – 12:00'],
         ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة.','12:00 – 16:00'],
@@ -148,6 +159,7 @@
         ['🏃 الرياضة','تمرين اليوم حسب الخطة.','19:00 – 20:30'],
         ['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council.','21:00 – 22:00']
       ];
+
       function habitsForDate(now){
         if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
         if(now.getDay()===6){return saturdayHabits.map(function(h){return h.slice()})}
@@ -164,7 +176,6 @@
       function weekStartSaturday(date){var d=new Date(date.getFullYear(),date.getMonth(),date.getDate());var back=(d.getDay()+1)%7;d.setDate(d.getDate()-back);return d}
       function habitsForSpecificDate(date){return habitsForDate(date)}
       function dailyProgressForDate(date){
-        if(date.getDay()===5){return null}
         var key='mazenOSProgressV2:'+localDateKey(date);var state=null;
         try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
         var dayHabits=habitsForSpecificDate(date);var total=dayHabits.length;
@@ -223,7 +234,6 @@
         }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
       }
       function refreshProgress(){
-        if(selectedDashboardDate.getDay()===5){el('mz-life-label').textContent='يوم مفتوح — بلا تقييم';el('mz-life-bar').style.width='0%';el('mz-dashboard-progress').textContent='يوم مفتوح';return}
         var score=0;var completed=0;
         for(var h=0;h<habitState.length;h++){if(habitState[h]){score+=1;completed++}}
         var percent=habitState.length?Math.round(score/habitState.length*100):0;
@@ -234,7 +244,12 @@
       function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
       var notifiedKey='mazenOSNotifications:'+localDateKey(new Date());
       var PUSH_SCHEDULE_ENDPOINT='https://ffbqnhdmfcgsddjsovhk.supabase.co/functions/v1/sync-push-schedule';
-      function syncPushSchedule(){try{var savedPush=null;try{savedPush=JSON.parse(localStorage.getItem('mazenOSPushSubscription'))}catch(e){}var todayList=habitsForDate(new Date());var payload={date:localDateKey(new Date()),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:todayList.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(habitState[index])}})};fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){})}catch(e){}}
+      function syncPushSchedule(){try{
+        var savedPush=null;try{savedPush=JSON.parse(localStorage.getItem('mazenOSPushSubscription'))}catch(e){}
+        var today=new Date();var todayList=habitsForDate(today);var todaySaved=savedHabitsForDate(today).state;
+        var payload={date:localDateKey(today),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:todayList.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(todaySaved[index])}})};
+        fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){})
+      }catch(e){}}
       function notificationState(){try{return JSON.parse(localStorage.getItem(notifiedKey))||{}}catch(e){return {}}}
       function motivationForTask(title){
         var t=String(title||'').replace(/^\s*[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0F]+\s*/u,'').trim();
@@ -271,48 +286,39 @@
       }
       function currentHabitIndex(now){
         var value=now.getHours()*60+now.getMinutes();
-        if(now.getDay()===5){
-          var fridayRanges=[[480,510],[510,630],[630,690],[690,810],[810,900],[900,960],[960,1080],[1080,1200],[1200,1410],[1410,1920]];
-          for(var f=0;f<fridayRanges.length;f++){var fs=fridayRanges[f][0],fe=fridayRanges[f][1];if(fe>1440){if(value>=fs||value<fe-1440){return f}}else if(value>=fs&&value<fe){return f}}
-          return -1;
+        var list=habitsForDate(now);
+        var match=-1;
+        for(var ci=0;ci<list.length;ci++){
+          var range=habitTimeRange(list[ci]);
+          if(!range){continue}
+          var active=range.end<range.start ? (value>=range.start||value<range.end) : (value>=range.start&&value<range.end);
+          if(active){match=ci}
         }
-        if(now.getDay()===6){
-          var saturdayRanges=[[600,720],[720,960],[1020,1110],[1140,1230],[1260,1320]];
-          for(var s=0;s<saturdayRanges.length;s++){var ss=saturdayRanges[s][0],se=saturdayRanges[s][1];if(value>=ss&&value<se){return s}}
-          return -1;
-        }
-        var ranges=[[450,510],[510,570],[570,630],[630,900],[930,1020],[1020,1110],[1140,1230],[1230,1350],[1350,1380],[1380,1410]];
-        for(var r=0;r<ranges.length;r++){
-          var start=ranges[r][0],end=ranges[r][1];
-          if(end>1440){if(value>=start||value<end-1440){return r}}
-          else if(value>=start&&value<end){return r}
-        }
-        return -1;
+        return match;
       }
       function greeting(now){var h=now.getHours();return h<12?'صباح الخير يا مازن':h<18?'مساء الخير يا مازن':'مساء الخير يا مازن'}
       function habitEndMinutes(h){var parts=h[2].split(' – ');if(parts.length!==2||!/^[0-9]{2}:[0-9]{2}$/.test(parts[1])){return null}return minutes(parts[1])}
       function isHabitExpired(h,index){if(localDateKey(selectedDashboardDate)!==localDateKey(new Date())){return false}if(index===currentHabit){return false}var end=habitEndMinutes(h);if(end===null){return false}var now=new Date();var value=now.getHours()*60+now.getMinutes();return value>=end}
       function nextUpcomingHabitIndex(now,habitList){
         var value=now.getHours()*60+now.getMinutes();
+        var best=-1,bestStart=99999;
         for(var ui=0;ui<habitList.length;ui++){
           var range=habitTimeRange(habitList[ui]);
-          if(range&&value<range.start){return ui}
+          if(range&&range.start>value&&range.start<bestStart){best=ui;bestStart=range.start}
         }
-        return -1;
+        return best;
       }
       function updateDashboard(now,session){
         var selected=selectedDashboardDate||now;var selectedData=savedHabitsForDate(selected);var selectedHabits=selectedData.habits;var selectedState=selectedData.state;var selectedProgress=dailyProgressForDate(selected);var isToday=localDateKey(selected)===localDateKey(new Date());var firstIncomplete=-1;
         for(var z=0;z<selectedState.length;z++){if(!selectedState[z]){firstIncomplete=z;break}}
         el('mz-dashboard-date').textContent=names[selected.getDay()]+'، '+selected.getDate()+'/'+(selected.getMonth()+1);
         el('mz-dashboard-day').textContent=names[selected.getDay()];
-        el('mz-dashboard-focus').textContent=isToday&&currentHabit>=0?(currentHabit===3?'العمل':habits[currentHabit][0]):(firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'مكتمل');
+        el('mz-dashboard-focus').textContent=isToday&&currentHabit>=0?habits[currentHabit][0]:(firstIncomplete>=0?selectedHabits[firstIncomplete][0]:'مكتمل');
         el('mz-dashboard-progress').textContent=selectedProgress===null?'يوم مفتوح':selectedProgress+'%';
         if(isToday){
           var upcomingIndex=currentHabit>=0?-1:nextUpcomingHabitIndex(now,habits);
-          el('mz-dashboard-current').textContent=currentHabit>=0?(currentHabit===3?'العمل':habits[currentHabit][0]):(upcomingIndex>=0?'وقت مرن':'انتهت مهام اليوم');
-          if(currentHabit===3){
-            el('mz-dashboard-next').textContent=habits[3][0]+' • '+habits[3][2];
-          }else if(currentHabit>=0&&currentHabit<habits.length-1){
+          el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:(upcomingIndex>=0?'وقت مرن':'انتهت مهام اليوم');
+          if(currentHabit>=0&&currentHabit<habits.length-1){
             el('mz-dashboard-next').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2];
           }else if(upcomingIndex>=0){
             el('mz-dashboard-next').textContent=habits[upcomingIndex][0]+' • '+habits[upcomingIndex][2];
@@ -328,9 +334,8 @@
       function updateSmartFlow(){
         var now=new Date();var session=developmentSession(now);currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
-        el('mz-current-task').textContent=currentHabit>=0?(currentHabit===3?'العمل':habits[currentHabit][0]):(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
-        if(currentHabit===3){el('mz-next-task').textContent=habits[3][0]+' • '+habits[3][2]}
-        else if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
+        el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
+        if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
         else if(upcoming>=0){el('mz-next-task').textContent=habits[upcoming][0]+' • '+habits[upcoming][2]}
         else{el('mz-next-task').textContent='لا توجد مهام مجدولة لاحقًا اليوم'}
         renderHabits();updateDashboard(now,session);
@@ -338,7 +343,6 @@
       function renderHabits(){
         var box=el('mz-habits');box.innerHTML='';var done=0;
         var isReadOnlyPast=localDateKey(selectedDashboardDate)<localDateKey(new Date());
-        if(selectedDashboardDate.getDay()===5){habits.forEach(function(h){var row=document.createElement('div');row.className='mz-row';var spacer=document.createElement('span');spacer.textContent='';var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';var time=document.createElement('time');time.textContent=h[2];row.appendChild(spacer);row.appendChild(label);row.appendChild(time);box.appendChild(row)});refreshProgress();return}
         habits.forEach(function(h,index){
           var expired=isHabitExpired(h,index)&&!habitState[index];var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'')+(expired?' mz-expired':'');
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
