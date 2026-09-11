@@ -1,4 +1,6 @@
-<!-- Mazen OS build: 2026-08-29-1800 -->
+
+
+<!-- Mazen OS build: weekly-push-report-2026-09-11-v2 -->
 <div id="maz-os" dir="rtl">
   <style>
     #maz-os{background:#f6f2ea;color:#10233c;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:0;min-height:100%;width:100%;max-width:none;overflow-x:hidden;}
@@ -90,17 +92,32 @@
         <button type="button" id="mz-open-week">عرض الأسبوع</button>
       </div>
       <strong id="mz-life-label">0 من 10 فترات</strong><div class="mz-progress"><span id="mz-life-bar"></span></div><p id="mz-save-status" style="margin:-6px 0 14px;color:#657083;font-size:13px">يتم الحفظ تلقائيًا على هذا الجهاز</p>
-      <div class="mz-actions" style="margin-top:0;margin-bottom:14px"><button type="button" id="mz-enable-notifications">🔔 تفعيل التذكيرات</button></div>
+      <div class="mz-actions" style="margin-top:0;margin-bottom:6px"><button type="button" id="mz-enable-notifications">🔔 تفعيل إشعارات الأسبوع</button></div>
+      <p class="mz-notify-note" id="mz-notification-status">يتم طلب إذن الإشعارات مرة واحدة فقط، ثم تتم مزامنة جدول الأسبوع تلقائيًا.</p>
       <div class="mz-list" id="mz-habits"></div>
       <div class="mz-actions"><button type="button" id="mz-reset-life">إعادة ضبط اليوم</button></div>
     </section>
 
     <section id="mz-week-panel" class="mz-card mz-hidden">
-      <div class="mz-head"><div><h2>الأسبوع</h2><p>عرض زمني للأيام ونسب الإنجاز.</p></div></div>
+      <div class="mz-head"><div><h2>الأسبوع</h2><p>مؤشر أسبوعي مرتبط مباشرة بإنجاز الفترات الزمنية.</p></div></div>
       <div class="mz-week">
         <div class="mz-week-head"><div><h3>📈 تطور الأسبوع</h3><p id="mz-week-range-copy" style="margin:4px 0 0;color:#657083">من السبت إلى الجمعة</p></div><div class="mz-week-score" id="mz-week-score-copy">0%</div></div>
         <div class="mz-progress"><span id="mz-week-bar-copy"></span></div>
         <div class="mz-week-days" id="mz-week-days-copy"></div>
+      </div>
+      <div class="mz-report">
+        <h3>📄 التقرير الأسبوعي</h3>
+        <p class="mz-report-sub" id="mz-report-range">يتم تحديث التقرير تلقائيًا من إنجاز المهام خلال الأسبوع.</p>
+        <div class="mz-report-grid">
+          <div class="mz-report-stat"><small>مؤشر الأسبوع</small><strong id="mz-report-score">0%</strong></div>
+          <div class="mz-report-stat"><small>الفترات المكتملة</small><strong id="mz-report-completed">0 / 0</strong></div>
+          <div class="mz-report-stat"><small>أفضل يوم</small><strong id="mz-report-best">—</strong></div>
+          <div class="mz-report-stat"><small>يحتاج تركيزًا أكبر</small><strong id="mz-report-low">—</strong></div>
+        </div>
+        <div class="mz-report-actions">
+          <button type="button" id="mz-download-week-report">⬇️ تحميل التقرير كملف</button>
+          <button type="button" id="mz-print-week-report">🖨️ طباعة / حفظ PDF</button>
+        </div>
       </div>
     </section>
   </div>
@@ -122,68 +139,95 @@
       viewportMeta.content='width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover';
       if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./service-worker.js').then(function(registration){console.log('Mazen OS Service Worker registered:',registration.scope)}).catch(function(error){console.error('Service Worker registration failed:',error)})})}
       var root=document.getElementById('maz-os');
-      var weekdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية هادئة لليوم مع الصلاة والفطور والاستعداد','07:30 – 08:30'],
-        ['العمل','الأولويات المهنية','08:30 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','09:30 – 10:30'],
-        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العمل','15:30 – 17:00'],
-        ['الدراسة الأكاديمية','الماجستير أو البحث العلمي','17:00 – 18:30'],
+      /* Mazen OS weekly time-block architecture — independent schedule for each day */
+      var sundayHabits=[
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
+        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
+        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العودة من العمل','15:00 – 16:30'],
+        ['الدراسة الأكاديمية','وقت مذاكرة مركز للماجستير والمتطلبات الأكاديمية','16:30 – 18:30'],
         ['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
-        ['وقت عائلي مسائي','العشاء ووقت مرن مع العائلة','20:30 – 21:00'],
-        ['تعلم اللغة الإنجليزية','ممارسة يومية للإنجليزية تشمل القراءة، المفردات، التطبيق والتحدث','21:00 – 22:00'],
-        ['القراءة','قراءة هادئة قبل النوم','22:30 – 23:00'],
+        ['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','20:30 – 21:30'],
+        ['وقت خاص','وقت شخصي مرن للاسترخاء أو الاهتمامات الخاصة','21:30 – 22:30'],
+        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+      ];
+
+      var mondayHabits=sundayHabits.map(function(h){return h.slice()});
+
+      var tuesdayHabits=[
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
+        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
+        ['وقت تنقل بين المهام','فترة انتقال بعد العمل للاستعداد لبقية أنشطة اليوم','15:00 – 16:00'],
+        ['الرياضة','تمرين اليوم حسب الخطة','16:00 – 17:00'],
+        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد التمرين','17:00 – 18:30'],
+        ['محاضرة المالية','حضور محاضرة مادة المالية والتركيز على محتوى المحاضرة','19:00 – 20:45'],
+        ['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','21:00 – 22:30'],
+        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+      ];
+
+      var wednesdayHabits=[
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
+        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
+        ['وقت تنقل بين المهام','فترة انتقال بعد العمل والاستعداد للمحاضرات','15:00 – 16:00'],
+        ['المحاضرات','وقت المحاضرات الأكاديمية المسائية','16:00 – 21:45'],
+        ['وقت العائلة والعشاء','العشاء ووقت هادئ مع العائلة بعد المحاضرات','21:45 – 23:00'],
         ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
 
       var thursdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية هادئة لليوم مع الصلاة والفطور والاستعداد','07:30 – 08:30'],
-        ['العمل','الأولويات المهنية','08:30 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','09:30 – 10:30'],
-        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العمل','15:30 – 17:00'],
-        ['🌿 مساء الخميس المفتوح','وقت مفتوح بعد العائلة لقضاء مساء الخميس براحة ومرونة','17:00 – 23:59'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','00:00 – 00:30']
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
+        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
+        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العودة من العمل','15:00 – 17:00'],
+        ['🌿 مساء الخميس المفتوح','مساء مرن للراحة أو الخروج أو الوقت العائلي والاجتماعي دون التزامات إضافية','17:00 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
 
       var fridayHabits=[
-        ['🕌 صلاة الجمعة وقراءة سورة الكهف','صلاة الجمعة وقراءة سورة الكهف بهدوء وخشوع','12:00 – 13:30'],
-        ['❤️ وقت العائلة','وقت عائلي ممتد للغداء والخروج والأنشطة المشتركة','13:30 – 20:00'],
-        ['🤝 التواصل الاجتماعي','ساعة للتواصل وصلة العلاقات','20:00 – 21:00'],
-        ['👥 مقابلة الأصدقاء','وقت للقاء الأصدقاء والاستمتاع بالصحبة','21:00 – 23:59'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','00:00 – 00:30']
+        ['🕌 صلاة الجمعة وقراءة سورة الكهف','وقت للعبادة وصلاة الجمعة وقراءة سورة الكهف','12:00 – 13:30'],
+        ['❤️ وقت العائلة','وقت عائلي ممتد للغداء والخروج والأنشطة المشتركة','13:30 – 19:00'],
+        ['🌿 وقت شخصي واجتماعي','وقت مرن للراحة أو التواصل الاجتماعي','19:00 – 20:00'],
+        ['📊 تقويم الأسبوع','مراجعة الأسبوع: الإنجازات والتحديات والتعديل الأهم للأسبوع القادم','20:00 – 20:30'],
+        ['👥 مساء الجمعة المفتوح','وقت مفتوح للعائلة أو الأصدقاء والراحة','20:30 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
 
       var saturdayHabits=[
-        ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل الملاحظات والتحسينات للأسبوع القادم.','10:00 – 12:00'],
-        ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة.','12:00 – 16:00'],
-        ['🎯 تحضير IELTS','جلسة مركزة لتدريب IELTS مع مراجعة الأخطاء.','17:00 – 18:30'],
-        ['🏃 الرياضة','تمرين اليوم حسب الخطة.','19:00 – 20:30'],
-        ['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council.','21:00 – 22:00']
+        ['الاستيقاظ والصلاة والفطور','بداية هادئة ليوم السبت والصلاة والفطور','07:00 – 08:00'],
+        ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل ملاحظات وتحسينات الأسبوع القادم','10:00 – 12:00'],
+        ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة','12:00 – 16:00'],
+        ['🎯 تحضير IELTS','جلسة مركزة لتدريب IELTS مع مراجعة الأخطاء','17:00 – 18:30'],
+        ['🏃 الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
+        ['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council','21:00 – 22:00'],
+        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
+        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
 
       function habitsForDate(now){
-        if(now.getDay()===5){return fridayHabits.map(function(h){return h.slice()})}
-        if(now.getDay()===6){return saturdayHabits.map(function(h){return h.slice()})}
-        if(now.getDay()===4){return thursdayHabits.map(function(h){return h.slice()})}
-        var list=weekdayHabits.map(function(h){return h.slice()});
-        if(now.getDay()===1||now.getDay()===3){
-          list[7]=['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council.','21:00 – 22:00'];
-        }
-        return list;
+        var day=now.getDay();
+        if(day===0){return sundayHabits.map(function(h){return h.slice()})}
+        if(day===1){return mondayHabits.map(function(h){return h.slice()})}
+        if(day===2){return tuesdayHabits.map(function(h){return h.slice()})}
+        if(day===3){return wednesdayHabits.map(function(h){return h.slice()})}
+        if(day===4){return thursdayHabits.map(function(h){return h.slice()})}
+        if(day===5){return fridayHabits.map(function(h){return h.slice()})}
+        return saturdayHabits.map(function(h){return h.slice()});
       }
       var habits=habitsForDate(new Date());
       var habitState=[];var currentHabit=-1;var i;var selectedDashboardDate=new Date();
       function localDateKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
       function weekStartSaturday(date){var d=new Date(date.getFullYear(),date.getMonth(),date.getDate());var back=(d.getDay()+1)%7;d.setDate(d.getDate()-back);return d}
       function habitsForSpecificDate(date){return habitsForDate(date)}
-      function dailyProgressForDate(date){
-        var key='mazenOSProgressV2:'+localDateKey(date);var state=null;
-        try{state=JSON.parse(localStorage.getItem(key))}catch(e){}
-        var dayHabits=habitsForSpecificDate(date);var total=dayHabits.length;
-        if(!state||!Array.isArray(state.habitState)||state.habitState.length!==total){return 0}
-        var score=0;
-        for(var x=0;x<state.habitState.length;x++){if(state.habitState[x]){score+=1}}
-        return total?Math.round(score/total*100):0;
+      function dayProgressData(date){
+        var data=savedHabitsForDate(date);var completed=0;
+        for(var di=0;di<data.state.length;di++){if(data.state[di]){completed++}}
+        return {completed:completed,total:data.habits.length,percent:data.habits.length?Math.round(completed/data.habits.length*100):0};
       }
+      function dailyProgressForDate(date){return dayProgressData(date).percent}
       function savedHabitsForDate(date){
         var list=habitsForSpecificDate(date);var state=null;
         try{state=JSON.parse(localStorage.getItem('mazenOSProgressV2:'+localDateKey(date)))}catch(e){}
@@ -197,21 +241,44 @@
         el('mz-date').textContent=names[selectedDate.getDay()]+'، '+selectedDate.getDate()+'/'+(selectedDate.getMonth()+1);el('mz-greeting').textContent='خطة يوم '+names[selectedDate.getDay()];
         el('mz-current-task').textContent=habits.length?habits[0][0]:'—';el('mz-next-task').textContent=habits.length>1?habits[1][0]+' • '+habits[1][2]:'—';renderHabits();refreshProgress();el('mz-life-tab').click();
       }
-      function renderWeeklyProgress(){
+      function weeklyPerformanceData(){
         var labels=['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
-        var start=weekStartSaturday(new Date());var box=el('mz-week-days');box.innerHTML='';var total=0;var scoredDays=0;
+        var start=weekStartSaturday(new Date());var end=new Date(start);end.setDate(start.getDate()+6);
+        var days=[];var completed=0;var total=0;
         for(var w=0;w<7;w++){
-          var date=new Date(start);date.setDate(start.getDate()+w);var pct=dailyProgressForDate(date);if(pct!==null){total+=pct;scoredDays++}
-          var statusClass=pct===null?'':(pct>90?' mz-status-green':(pct>=70?' mz-status-yellow':' mz-status-red'));
-          var card=document.createElement('button');card.type='button';card.className='mz-week-day'+statusClass+(localDateKey(date)===localDateKey(selectedDashboardDate)?' active':'');card.innerHTML='<strong>'+labels[w]+'</strong><span>'+(pct===null?'مفتوح':pct+'%')+'</span>';card.setAttribute('aria-label','عرض بيانات '+labels[w]);
-          (function(chosenDate){card.addEventListener('click',function(){openDayFromWeek(chosenDate)})})(date);
-          box.appendChild(card);
+          var date=new Date(start);date.setDate(start.getDate()+w);
+          var data=dayProgressData(date);completed+=data.completed;total+=data.total;
+          days.push({label:labels[w],date:date,completed:data.completed,total:data.total,percent:data.percent});
         }
-        var average=scoredDays?Math.round(total/scoredDays):0;var end=new Date(start);end.setDate(start.getDate()+6);var weekClass=average>90?'mz-status-green':(average>=70?'mz-status-yellow':'mz-status-red');
-        el('mz-week-score').textContent=average+'%';el('mz-week-bar').style.width=average+'%';
-        function formatGregorianDate(date){return String(date.getDate()).padStart(2,'0')+'/'+String(date.getMonth()+1).padStart(2,'0')+'/'+date.getFullYear()}
-        el('mz-week-range').textContent='من '+formatGregorianDate(start)+' إلى '+formatGregorianDate(end);
-        el('mz-week-summary-score').textContent=average+'%';el('mz-week-summary').className='mz-week-summary '+weekClass;
+        return {start:start,end:end,days:days,completed:completed,total:total,score:total?Math.round(completed/total*100):0};
+      }
+      function formatGregorianDate(date){return String(date.getDate()).padStart(2,'0')+'/'+String(date.getMonth()+1).padStart(2,'0')+'/'+date.getFullYear()}
+      function renderWeekDaysInto(containerId,weekData){
+        var box=el(containerId);if(!box){return}box.innerHTML='';
+        weekData.days.forEach(function(day){
+          var pct=day.percent;var statusClass=pct>90?' mz-status-green':(pct>=70?' mz-status-yellow':' mz-status-red');
+          var card=document.createElement('button');card.type='button';card.className='mz-week-day'+statusClass+(localDateKey(day.date)===localDateKey(selectedDashboardDate)?' active':'');
+          card.innerHTML='<strong>'+day.label+'</strong><span>'+pct+'%</span>';card.setAttribute('aria-label','عرض بيانات '+day.label);
+          (function(chosenDate){card.addEventListener('click',function(){openDayFromWeek(chosenDate)})})(day.date);
+          box.appendChild(card);
+        });
+      }
+      function renderWeeklyProgress(){
+        var week=weeklyPerformanceData();var weekClass=week.score>90?'mz-status-green':(week.score>=70?'mz-status-yellow':'mz-status-red');
+        renderWeekDaysInto('mz-week-days',week);renderWeekDaysInto('mz-week-days-copy',week);
+        el('mz-week-score').textContent=week.score+'%';el('mz-week-bar').style.width=week.score+'%';
+        el('mz-week-range').textContent='من '+formatGregorianDate(week.start)+' إلى '+formatGregorianDate(week.end);
+        el('mz-week-summary-score').textContent=week.score+'%';el('mz-week-summary').className='mz-week-summary '+weekClass;
+        if(el('mz-week-score-copy')){el('mz-week-score-copy').textContent=week.score+'%'}
+        if(el('mz-week-bar-copy')){el('mz-week-bar-copy').style.width=week.score+'%'}
+        if(el('mz-week-range-copy')){el('mz-week-range-copy').textContent='من '+formatGregorianDate(week.start)+' إلى '+formatGregorianDate(week.end)}
+        var best=week.days.slice().sort(function(a,b){return b.percent-a.percent})[0];
+        var low=week.days.slice().sort(function(a,b){return a.percent-b.percent})[0];
+        if(el('mz-report-range')){el('mz-report-range').textContent='الفترة: '+formatGregorianDate(week.start)+' – '+formatGregorianDate(week.end)}
+        if(el('mz-report-score')){el('mz-report-score').textContent=week.score+'%'}
+        if(el('mz-report-completed')){el('mz-report-completed').textContent=week.completed+' / '+week.total}
+        if(el('mz-report-best')){el('mz-report-best').textContent=best?best.label+' • '+best.percent+'%':'—'}
+        if(el('mz-report-low')){el('mz-report-low').textContent=low?low.label+' • '+low.percent+'%':'—'}
       }
       var todayKey=localDateKey(new Date());
       var storageKey='mazenOSProgressV2:'+todayKey;
@@ -229,7 +296,7 @@
           localStorage.setItem(storageKey,JSON.stringify({habitState:habitState,updatedAt:Date.now()}));
           el('mz-save-status').textContent='تم الحفظ الآن';
           renderWeeklyProgress();
-          syncPushSchedule();
+          syncPushDate(selectedDashboardDate);
           return true;
         }catch(storageError){el('mz-save-status').textContent='تعذر الحفظ على هذا الجهاز';return false}
       }
@@ -244,12 +311,34 @@
       function minutes(value){var parts=value.split(':');return Number(parts[0])*60+Number(parts[1])}
       var notifiedKey='mazenOSNotifications:'+localDateKey(new Date());
       var PUSH_SCHEDULE_ENDPOINT='https://ffbqnhdmfcgsddjsovhk.supabase.co/functions/v1/sync-push-schedule';
-      function syncPushSchedule(){try{
+      function pushPayloadForDate(date){
         var savedPush=null;try{savedPush=JSON.parse(localStorage.getItem('mazenOSPushSubscription'))}catch(e){}
-        var today=new Date();var todayList=habitsForDate(today);var todaySaved=savedHabitsForDate(today).state;
-        var payload={date:localDateKey(today),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:todayList.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(todaySaved[index])}})};
-        fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){})
-      }catch(e){}}
+        var data=savedHabitsForDate(date);
+        return {date:localDateKey(date),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Riyadh',endpoint:savedPush&&savedPush.endpoint?savedPush.endpoint:null,habits:data.habits.map(function(h,index){return {title:h[0],time:h[2],completed:Boolean(data.state[index])}})};
+      }
+      function syncPushDate(date){
+        var payload=pushPayloadForDate(date);if(!payload.endpoint){return Promise.resolve({skipped:true})}
+        return fetch(PUSH_SCHEDULE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){if(!r.ok){throw new Error('تعذر مزامنة '+payload.date)}return r.json().catch(function(){return {ok:true}})});
+      }
+      function syncWeeklyPushSchedule(force){
+        if(!('Notification' in window)||Notification.permission!=='granted'){return Promise.resolve(false)}
+        var start=weekStartSaturday(new Date());var weekKey=localDateKey(start);var cacheKey='mazenOSWeeklyPushSync:'+weekKey;
+        var last=Number(localStorage.getItem(cacheKey)||0);
+        if(!force&&last&&Date.now()-last<6*60*60*1000){return Promise.resolve(true)}
+        var jobs=[];
+        for(var si=0;si<7;si++){var d=new Date(start);d.setDate(start.getDate()+si);jobs.push(syncPushDate(d))}
+        if(el('mz-notification-status')){el('mz-notification-status').textContent='جارٍ مزامنة إشعارات الأسبوع بالكامل…'}
+        return Promise.all(jobs).then(function(){
+          try{localStorage.setItem(cacheKey,String(Date.now()))}catch(e){}
+          if(el('mz-notification-status')){el('mz-notification-status').textContent='✅ تمت مزامنة إشعارات الأسبوع من السبت إلى الجمعة. لا تحتاج لتفعيلها كل يوم.'}
+          updateNotificationButton();return true;
+        }).catch(function(error){
+          console.error('Weekly push sync failed:',error);
+          if(el('mz-notification-status')){el('mz-notification-status').textContent='تعذر تحديث بعض إشعارات الأسبوع. افتح التطبيق وحاول المزامنة مرة أخرى.'}
+          return false;
+        });
+      }
+      function syncPushSchedule(){return syncPushDate(new Date())}
       function notificationState(){try{return JSON.parse(localStorage.getItem(notifiedKey))||{}}catch(e){return {}}}
       function motivationForTask(title){
         var t=String(title||'').replace(/^\s*[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0F]+\s*/u,'').trim();
@@ -260,17 +349,27 @@
           'العائلة':'استمتع باللحظة، هذا الوقت لا يتكرر ❤️',
           'الرياضة':'وقت الحركة 💪 ابدأ فقط، والباقي سيأتي.',
           'الدراسة الأكاديمية':'خطوة اليوم تقرّبك من الهدف الكبير 🎓',
+          'وقت تنقل بين المهام':'انتقل بهدوء ورتّب طاقتك للمرحلة التالية 🔄',
+          'محاضرة المالية':'ركّز في المفاهيم الأساسية وسجّل أهم ملاحظة اليوم 💰',
+          'المحاضرات':'وقت التركيز الأكاديمي؛ حضورك الكامل يصنع الفارق 🎓',
           'British Council':'ساعة اليوم تبني طلاقة الغد 🇬🇧',
           'تحضير IELTS':'كل تدريب اليوم يرفع جاهزيتك للاختبار 🎯',
           'جلسة التطوير: الذكاء الاصطناعي':'تعلّم شيئًا واحدًا وطبّقه اليوم 🤖',
           'القراءة':'اختم يومك بفكرة جديدة 📖',
+          'تصفح الكتب':'صفحات قليلة اليوم قد تفتح فكرة كبيرة غدًا 📚',
+          'وقت خاص':'هذه الفترة لك؛ استخدمها بالطريقة التي تعيد لك التوازن 🌙',
           'العمل':'ركّز على ما يصنع الأثر اليوم 💼',
           'صلاة الجمعة وقراءة سورة الكهف':'وقت للسكينة والتجدد 🕌',
           'التواصل الاجتماعي':'العلاقات القوية تُبنى بالاهتمام المستمر 🤝',
           'مقابلة الأصدقاء':'استمتع بالصحبة واترك العمل خلفك قليلًا 👥',
           'الاستعداد للنوم':'أغلق يومك بهدوء؛ طاقة الغد تبدأ الليلة 🌙',
           'الاستيقاظ والصلاة والفطور':'ابدأ يومك بهدوء ووضوح ☀️',
-          'تحديث Mazen OS':'مراجعة بسيطة اليوم تصنع أسبوعًا أوضح 🧭'
+          'تحديث Mazen OS':'مراجعة بسيطة اليوم تصنع أسبوعًا أوضح 🧭',
+          'تقويم الأسبوع':'راجع أسبوعك بوضوح وحدد تعديلًا واحدًا للأسبوع القادم 📊',
+          'مساء الخميس المفتوح':'استمتع بمساحة الراحة دون تحويلها إلى قائمة مهام 🌿',
+          'وقت شخصي واجتماعي':'امنح نفسك مساحة للراحة والتواصل 🌿',
+          'مساء الجمعة المفتوح':'اختتم أسبوعك براحة ووقت نوعي 👥',
+          'وقت العائلة والعشاء':'اختم يومك الأكاديمي بالقرب من العائلة ❤️'
         };
         return messages[t]||'خصص هذه الفترة لما يهمك، وامنحها حضورك الكامل ✨';
       }
@@ -280,9 +379,10 @@
       function checkTaskNotifications(){if(!('Notification' in window)||Notification.permission!=='granted'){return}var now=new Date();if(localDateKey(now)!==localDateKey(new Date())){return}var value=now.getHours()*60+now.getMinutes();var state=notificationState();var todayHabits=habitsForDate(now);for(var ni=0;ni<todayHabits.length;ni++){var range=habitTimeRange(todayHabits[ni]);if(!range){continue}var beforeStartKey='beforeStart-'+ni;var endKey='end-'+ni;if(value>=range.start-10&&value<range.start-8&&!state[beforeStartKey]){showNotification('⏰ بعد 10 دقائق: '+todayHabits[ni][0],motivationForTask(todayHabits[ni][0]));state[beforeStartKey]=true}if(value>=range.end&&value<range.end+2&&!state[endKey]){showNotification('✅ انتهى وقت '+todayHabits[ni][0],'أحسنت. سجّل إنجازك واستعد للفترة التالية ✨');state[endKey]=true}}saveNotificationState(state)}
       function developmentSession(now){
         var day=now.getDay();
-        if(day===5){return ['يوم الجمعة العائلي','عبادة، عائلة، قراءة ونشاط خارجي']}
-        if(day===6){return ['IELTS + مراجعة الأسبوع','تمرين IELTS أسبوعي مع مراجعة التقدم وتحديث الأسبوع القادم']}
-        return ['الذكاء الاصطناعي','جلسة يومية مكتملة لتعلم أداة أو مفهوم وتطبيقه عمليًا'];
+        if(day===5){return ['تقويم الأسبوع','راحة، عائلة، ومراجعة قصيرة للأسبوع']}
+        if(day===6){return ['الاستعداد للأسبوع','Mazen OS وIELTS والرياضة وBritish Council']}
+        if(day===4){return ['الذكاء الاصطناعي + التعافي','جلسة التطوير داخل العمل ثم مساء مفتوح للراحة']}
+        return ['الذكاء الاصطناعي','جلسة تطوير داخل وقت العمل من 13:30 إلى 14:30'];
       }
       function currentHabitIndex(now){
         var value=now.getHours()*60+now.getMinutes();
@@ -318,8 +418,9 @@
         if(isToday){
           var upcomingIndex=currentHabit>=0?-1:nextUpcomingHabitIndex(now,habits);
           el('mz-dashboard-current').textContent=currentHabit>=0?habits[currentHabit][0]:(upcomingIndex>=0?'وقت مرن':'انتهت مهام اليوم');
-          if(currentHabit>=0&&currentHabit<habits.length-1){
-            el('mz-dashboard-next').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2];
+          var nextTimedIndex=nextUpcomingHabitIndex(now,habits);
+          if(nextTimedIndex>=0){
+            el('mz-dashboard-next').textContent=habits[nextTimedIndex][0]+' • '+habits[nextTimedIndex][2];
           }else if(upcomingIndex>=0){
             el('mz-dashboard-next').textContent=habits[upcomingIndex][0]+' • '+habits[upcomingIndex][2];
           }else{
@@ -335,7 +436,8 @@
         var now=new Date();var session=developmentSession(now);currentHabit=currentHabitIndex(now);el('mz-greeting').textContent=greeting(now);
         var upcoming= currentHabit>=0 ? -1 : nextUpcomingHabitIndex(now,habits);
         el('mz-current-task').textContent=currentHabit>=0?habits[currentHabit][0]:(upcoming>=0?'وقت مرن أو انتقال بين المهام':'انتهت مهام اليوم');
-        if(currentHabit>=0&&currentHabit<habits.length-1){el('mz-next-task').textContent=habits[currentHabit+1][0]+' • '+habits[currentHabit+1][2]}
+        var nextTimed=nextUpcomingHabitIndex(now,habits);
+        if(nextTimed>=0){el('mz-next-task').textContent=habits[nextTimed][0]+' • '+habits[nextTimed][2]}
         else if(upcoming>=0){el('mz-next-task').textContent=habits[upcoming][0]+' • '+habits[upcoming][2]}
         else{el('mz-next-task').textContent='لا توجد مهام مجدولة لاحقًا اليوم'}
         renderHabits();updateDashboard(now,session);
@@ -360,6 +462,23 @@
         });
         refreshProgress();
       }
+
+      function weeklyReportHtml(){
+        var week=weeklyPerformanceData();var best=week.days.slice().sort(function(a,b){return b.percent-a.percent})[0];var low=week.days.slice().sort(function(a,b){return a.percent-b.percent})[0];
+        var rows=week.days.map(function(day){return '<tr><td>'+day.label+'</td><td>'+day.completed+' / '+day.total+'</td><td>'+day.percent+'%</td></tr>'}).join('');
+        return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mazen OS Weekly Report</title><style>body{font-family:Arial,sans-serif;background:#f6f2ea;color:#172033;margin:0;padding:28px}.report{max-width:760px;margin:auto;background:#fff;border-radius:20px;padding:28px;border:1px solid #e2e4e9}.brand{font-size:28px;font-weight:800;color:#173a63}.sub{color:#657083;margin:6px 0 22px}.score{font-size:44px;font-weight:900;color:#173a63;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.box{background:#fbfbfc;border:1px solid #e8eaf0;border-radius:14px;padding:14px}.box small{display:block;color:#657083;margin-bottom:5px}.box strong{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{padding:11px;border-bottom:1px solid #e8eaf0;text-align:right}th{background:#f7f9fc}@media print{body{background:#fff;padding:0}.report{border:0}}</style></head><body><div class="report"><div class="brand">Mazen OS</div><div class="sub">التقرير الأسبوعي • '+formatGregorianDate(week.start)+' – '+formatGregorianDate(week.end)+'</div><div>مؤشر الأداء الأسبوعي</div><div class="score">'+week.score+'%</div><div class="grid"><div class="box"><small>الفترات المكتملة</small><strong>'+week.completed+' / '+week.total+'</strong></div><div class="box"><small>أفضل يوم</small><strong>'+(best?best.label+' • '+best.percent+'%':'—')+'</strong></div><div class="box"><small>يحتاج تركيزًا أكبر</small><strong>'+(low?low.label+' • '+low.percent+'%':'—')+'</strong></div><div class="box"><small>أساس المؤشر</small><strong>الفترات الزمنية المكتملة</strong></div></div><table><thead><tr><th>اليوم</th><th>الإنجاز</th><th>النسبة</th></tr></thead><tbody>'+rows+'</tbody></table></div></body></html>';
+      }
+      function downloadWeeklyReport(){
+        var week=weeklyPerformanceData();var blob=new Blob([weeklyReportHtml()],{type:'text/html;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');
+        a.href=url;a.download='Mazen-OS-Weekly-Report-'+localDateKey(week.start)+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1500);
+      }
+      function printWeeklyReport(){
+        var w=window.open('','_blank');if(!w){alert('اسمح للنوافذ المنبثقة لفتح التقرير ثم اختر طباعة / حفظ PDF.');return}
+        w.document.open();w.document.write(weeklyReportHtml());w.document.close();setTimeout(function(){w.focus();w.print()},350);
+      }
+      if(el('mz-download-week-report')){el('mz-download-week-report').addEventListener('click',downloadWeeklyReport)}
+      if(el('mz-print-week-report')){el('mz-print-week-report').addEventListener('click',printWeeklyReport)}
+
       el('mz-dashboard-tab').addEventListener('click',function(){this.className='active';el('mz-life-tab').className='';el('mz-week-tab').className='';el('mz-dashboard-panel').className='mz-card';el('mz-life-panel').className='mz-card mz-hidden';el('mz-week-panel').className='mz-card mz-hidden'});
       el('mz-life-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-week-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-life-panel').className='mz-card';el('mz-week-panel').className='mz-card mz-hidden'});
       el('mz-week-tab').addEventListener('click',function(){this.className='active';el('mz-dashboard-tab').className='';el('mz-life-tab').className='';el('mz-dashboard-panel').className='mz-card mz-hidden';el('mz-life-panel').className='mz-card mz-hidden';el('mz-week-panel').className='mz-card';renderWeeklyProgress()});
@@ -370,13 +489,45 @@
       function ensurePushSubscription(){if(!('serviceWorker' in navigator)||!('PushManager' in window)){return Promise.reject(new Error('Push غير مدعوم على هذا الجهاز'))}return navigator.serviceWorker.ready.then(function(registration){return registration.pushManager.getSubscription().then(function(existing){if(existing){try{localStorage.setItem('mazenOSPushSubscription',JSON.stringify(existing.toJSON()))}catch(e){}return registerPushWithBackend(existing).then(function(){return existing})}return registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)}).then(function(subscription){try{localStorage.setItem('mazenOSPushSubscription',JSON.stringify(subscription.toJSON()))}catch(e){}return registerPushWithBackend(subscription).then(function(){return subscription})})})})}
       function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
       function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
-      function updateNotificationButton(){var b=el('mz-enable-notifications');if(!('Notification' in window)){b.textContent='🔔 الإشعارات غير متاحة هنا';return}if(Notification.permission==='granted'){b.textContent='✅ الإشعارات تعمل تلقائيًا';return}if(Notification.permission==='denied'){b.textContent='⚙️ فعّل الإشعارات من الإعدادات';return}if(isIOS()&&!isStandalone()){b.textContent='📲 أضف Mazen OS للشاشة الرئيسية أولاً';return}b.textContent='🔔 تفعيل التذكيرات'}
-      function autoEnablePushIfPermitted(){if(!('Notification' in window)||Notification.permission!=='granted'){return}ensurePushSubscription().then(function(){updateNotificationButton();syncPushSchedule()}).catch(function(error){console.error('Automatic Push refresh failed:',error)})}
+      function updateNotificationButton(){
+        var b=el('mz-enable-notifications');if(!b){return}
+        if(!('Notification' in window)){b.textContent='🔔 الإشعارات غير متاحة هنا';return}
+        if(Notification.permission==='granted'){b.textContent='✅ إشعارات الأسبوع مفعلة';return}
+        if(Notification.permission==='denied'){b.textContent='⚙️ فعّل الإشعارات من الإعدادات';return}
+        if(isIOS()&&!isStandalone()){b.textContent='📲 أضف Mazen OS للشاشة الرئيسية أولاً';return}
+        b.textContent='🔔 تفعيل إشعارات الأسبوع';
+      }
+      function autoEnablePushIfPermitted(){
+        if(!('Notification' in window)||Notification.permission!=='granted'){return}
+        ensurePushSubscription().then(function(){updateNotificationButton();return syncWeeklyPushSchedule(false)}).catch(function(error){console.error('Automatic Push refresh failed:',error)})
+      }
       updateNotificationButton();autoEnablePushIfPermitted();
-      el('mz-enable-notifications').addEventListener('click',function(){if(!('Notification' in window)){alert('الإشعارات غير متاحة في وضع التصفح الحالي. افتح Mazen OS كتطبيق من الشاشة الرئيسية.');return}if(isIOS()&&!isStandalone()){alert('على iPhone: اضغط زر المشاركة في Safari ← إضافة إلى الشاشة الرئيسية، ثم افتح Mazen OS من الأيقونة الجديدة واضغط تفعيل التذكيرات مرة أخرى.');return}if(Notification.permission==='denied'){alert('تم رفض الإشعارات سابقًا. افتح إعدادات iPhone ← الإشعارات ← Mazen OS واسمح بالإشعارات، ثم عد إلى التطبيق.');return}Notification.requestPermission().then(function(permission){updateNotificationButton();if(permission==='granted'){return ensurePushSubscription().then(function(){el('mz-enable-notifications').textContent='🔔 Push مفعّل على هذا الجهاز';showNotification('Mazen OS','تم ربط هذا الجهاز بخدمة Push بنجاح.');checkTaskNotifications()}).catch(function(error){console.error('Push subscription failed:',error);alert('تم منح إذن الإشعارات، لكن تعذر إنشاء اشتراك Push. تأكد من فتح Mazen OS من الشاشة الرئيسية ثم حاول مرة أخرى.')})}alert('لم يتم منح إذن الإشعارات. يمكنك المحاولة مجددًا من إعدادات الجهاز.')} ).catch(function(){alert('تعذر طلب إذن الإشعارات في هذا الوضع. افتح Mazen OS من الشاشة الرئيسية وحاول مرة أخرى.')})});
+      el('mz-enable-notifications').addEventListener('click',function(){
+        if(!('Notification' in window)){alert('الإشعارات غير متاحة في وضع التصفح الحالي. افتح Mazen OS كتطبيق من الشاشة الرئيسية.');return}
+        if(isIOS()&&!isStandalone()){alert('على iPhone: اضغط زر المشاركة في Safari ← إضافة إلى الشاشة الرئيسية، ثم افتح Mazen OS من الأيقونة الجديدة وفعّل الإشعارات مرة واحدة.');return}
+        if(Notification.permission==='denied'){alert('تم رفض الإشعارات سابقًا. افتح إعدادات iPhone ← الإشعارات ← Mazen OS واسمح بالإشعارات، ثم عد إلى التطبيق.');return}
+        var permissionPromise=Notification.permission==='granted'?Promise.resolve('granted'):Notification.requestPermission();
+        permissionPromise.then(function(permission){
+          updateNotificationButton();
+          if(permission!=='granted'){alert('لم يتم منح إذن الإشعارات. يمكنك المحاولة مجددًا من إعدادات الجهاز.');return}
+          return ensurePushSubscription().then(function(){
+            return syncWeeklyPushSchedule(true);
+          }).then(function(){
+            el('mz-enable-notifications').textContent='✅ إشعارات الأسبوع مفعلة';
+            showNotification('Mazen OS','تمت جدولة تذكيرات الأسبوع بالكامل من السبت إلى الجمعة.');
+            checkTaskNotifications();
+          }).catch(function(error){
+            console.error('Push subscription/sync failed:',error);
+            alert('تم منح إذن الإشعارات، لكن تعذر إكمال مزامنة الأسبوع. تأكد من الاتصال بالإنترنت ثم حاول مرة أخرى.');
+          });
+        }).catch(function(){alert('تعذر طلب إذن الإشعارات في هذا الوضع. افتح Mazen OS من الشاشة الرئيسية وحاول مرة أخرى.')});
+      });
       el('mz-reset-life').addEventListener('click',function(){habitState=habitState.map(function(){return false});saveState();renderHabits();refreshProgress();updateDashboard(new Date(),developmentSession(new Date()))});
       var now=new Date();var names=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];el('mz-date').textContent=names[now.getDay()]+'، '+now.getDate()+'/'+(now.getMonth()+1);
-      updateSmartFlow();refreshProgress();renderWeeklyProgress();checkTaskNotifications();syncPushSchedule();setInterval(function(){updateSmartFlow();checkTaskNotifications();syncPushSchedule()},60000);
+      updateSmartFlow();refreshProgress();renderWeeklyProgress();checkTaskNotifications();
+      if('Notification' in window&&Notification.permission==='granted'){syncWeeklyPushSchedule(false)}
+      document.addEventListener('visibilitychange',function(){if(!document.hidden&&'Notification' in window&&Notification.permission==='granted'){syncWeeklyPushSchedule(false);renderWeeklyProgress()}});
+      setInterval(function(){updateSmartFlow();checkTaskNotifications()},60000);
     })();
   </script>
 </div>
