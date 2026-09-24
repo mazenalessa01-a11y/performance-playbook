@@ -1,14 +1,14 @@
 
 
-<!-- Mazen OS build: weekly-push-report-2026-09-11-v2 -->
+<!-- Mazen OS build: healthy-green-hours-report-2026-09-24-v3 -->
 <div id="maz-os" dir="rtl">
   <style>
-    #maz-os{background:#f6f2ea;color:#10233c;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:0;min-height:100%;width:100%;max-width:none;overflow-x:hidden;}
+    #maz-os{background:#f3f8f4;color:#102b22;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:0;min-height:100%;width:100%;max-width:none;overflow-x:hidden;}
     #maz-os *{box-sizing:border-box}
     .mz-wrap{max-width:980px;width:100%;margin:auto;padding:16px}
-    .mz-hero{background:linear-gradient(135deg,#1b2a6b 0%,#2b6cb0 42%,#20b8a8 72%,#ffd166 100%);color:#fff;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 16px 34px rgba(43,108,176,.22);position:relative;overflow:hidden}
+    .mz-hero{background:linear-gradient(135deg,#0b5d3b 0%,#168a58 48%,#54b97b 100%);color:#fff;border-radius:28px;padding:24px;margin-bottom:16px;box-shadow:0 16px 34px rgba(43,108,176,.22);position:relative;overflow:hidden}
     .mz-hero::after{content:'';position:absolute;inset:auto -40px -70px auto;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.14);filter:blur(2px)}
-    .mz-brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.mz-logo-mark{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;overflow:hidden;background:transparent;box-shadow:0 10px 24px rgba(12,39,73,.14);flex:0 0 58px}.mz-logo-mark img{width:108%;height:108%;display:block;object-fit:cover;border-radius:inherit}.mz-hero h1{margin:0 0 6px;font-size:32px;letter-spacing:.2px}.mz-hero p{margin:0;opacity:.94}
+    .mz-brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.mz-logo-mark{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;overflow:hidden;background:#eaf8ef;padding:5px;box-shadow:0 10px 24px rgba(7,86,52,.22);flex:0 0 58px}.mz-logo-mark img{width:100%;height:100%;display:block;object-fit:cover;border-radius:14px}.mz-hero h1{margin:0 0 6px;font-size:32px;letter-spacing:.2px}.mz-hero p{margin:0;opacity:.94}
     .mz-tabs,.mz-days{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}
     .mz-tabs button,.mz-days button{min-height:44px;border:1px solid #d9dde5;background:#fff;color:#172033;border-radius:12px;padding:9px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
     .mz-tabs button.active,.mz-days button.active{background:#d9a52e;border-color:#d9a52e}
@@ -41,12 +41,14 @@
     .mz-status-yellow{background:#fff8e5!important;border-color:#d9a52e!important;color:#8b6500!important}
     .mz-status-red{background:#fff0f0!important;border-color:#d85c5c!important;color:#9b2f2f!important}
     .mz-week-summary{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid #e2e4e9;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
+
+    .mz-hours-report{margin-top:16px;display:grid;gap:10px}.mz-hours-row{display:grid;grid-template-columns:minmax(110px,1fr) 2fr auto;gap:10px;align-items:center;padding:12px;border:1px solid #e1e9e3;border-radius:14px;background:#fbfefc}.mz-hours-row strong{font-size:14px}.mz-hours-row small{white-space:nowrap;color:#50665b}.mz-hours-track{height:10px;background:#e5eee8;border-radius:999px;overflow:hidden}.mz-hours-track span{display:block;height:100%;background:linear-gradient(90deg,#168a58,#67c587);border-radius:inherit}.mz-hours-note{margin-top:10px;color:#65756c;font-size:13px}.mz-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mz-report-stat{padding:12px;border:1px solid #e2e9e4;border-radius:14px;background:#fbfefc}.mz-report-stat small{display:block;color:#65756c;margin-bottom:4px}.mz-report-stat strong{font-size:18px;color:#145f3e}.mz-report-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.mz-report-actions button{border:0;border-radius:12px;padding:11px 14px;background:#176b48;color:#fff;font-weight:800;cursor:pointer}
     @media(max-width:1024px), (hover:none) and (pointer:coarse){
       html,body{width:100%;min-height:100%;margin:0;background:#f7f4ee}
       body{overflow-x:hidden}
       #maz-os{width:100%;max-width:none;min-height:100%;padding:0 0 calc(104px + env(safe-area-inset-bottom));font-size:17px;overflow-x:hidden;background:#f6f2ea}
       .mz-wrap{max-width:none;width:100%;margin:0;padding:0 14px 22px}
-      .mz-hero{width:calc(100% + 28px);margin:0 -14px 18px;padding:28px 22px 24px;border-radius:0 0 30px 30px;min-height:142px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(135deg,#1b2a6b 0%,#2b6cb0 42%,#20b8a8 72%,#ffd166 100%);box-shadow:0 14px 32px rgba(43,108,176,.23)}.mz-hero h1{font-size:32px;letter-spacing:.2px}.mz-hero p{font-size:15px;line-height:1.8;opacity:.95}.mz-logo-mark{width:62px;height:62px;flex-basis:62px;border-radius:19px}.mz-logo-mark span{font-size:32px}
+      .mz-hero{width:calc(100% + 28px);margin:0 -14px 18px;padding:28px 22px 24px;border-radius:0 0 30px 30px;min-height:142px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(135deg,#0b5d3b 0%,#168a58 48%,#54b97b 100%);box-shadow:0 14px 32px rgba(43,108,176,.23)}.mz-hero h1{font-size:32px;letter-spacing:.2px}.mz-hero p{font-size:15px;line-height:1.8;opacity:.95}.mz-logo-mark{width:62px;height:62px;flex-basis:62px;border-radius:19px}.mz-logo-mark span{font-size:32px}
       .mz-tabs{position:fixed;z-index:1000;right:0;left:0;bottom:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow:visible;margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #e2e7ed;border-right:0;border-left:0;border-bottom:0;border-radius:0;box-shadow:0 -10px 28px rgba(18,41,75,.14);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
       .mz-tabs button{padding:10px 5px;font-size:14px;min-width:0;min-height:62px;white-space:normal;border-radius:18px;border-color:#e1e6ed;background:#fff;box-shadow:0 4px 12px rgba(18,41,75,.04)}.mz-tabs button.active{background:linear-gradient(135deg,#e8ad16,#d49a0b);color:#fff;border-color:#d49a0b;box-shadow:0 8px 18px rgba(211,154,16,.24)}
       .mz-days{gap:8px;padding:2px 0 7px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.mz-days button{min-width:92px;padding:9px 11px;scroll-snap-align:start}
@@ -109,11 +111,11 @@
         <h3>📄 التقرير الأسبوعي</h3>
         <p class="mz-report-sub" id="mz-report-range">يتم تحديث التقرير تلقائيًا من إنجاز المهام خلال الأسبوع.</p>
         <div class="mz-report-grid">
-          <div class="mz-report-stat"><small>مؤشر الأسبوع</small><strong id="mz-report-score">0%</strong></div>
-          <div class="mz-report-stat"><small>الفترات المكتملة</small><strong id="mz-report-completed">0 / 0</strong></div>
-          <div class="mz-report-stat"><small>أفضل يوم</small><strong id="mz-report-best">—</strong></div>
-          <div class="mz-report-stat"><small>يحتاج تركيزًا أكبر</small><strong id="mz-report-low">—</strong></div>
+          <div class="mz-report-stat"><small>مؤشر الساعات الرئيسية</small><strong id="mz-report-score">0%</strong></div>
+          <div class="mz-report-stat"><small>الساعات المكتملة / المستهدفة</small><strong id="mz-report-completed">0 / 0 س</strong></div>
         </div>
+        <div class="mz-hours-report" id="mz-hours-report"></div>
+        <p class="mz-hours-note">المؤشر يقيس الساعات المستهدفة في المجالات الخمسة الرئيسية: العمل، الرياضة، العائلة، الذكاء الاصطناعي، والدراسة.</p>
         <div class="mz-report-actions">
           <button type="button" id="mz-download-week-report">⬇️ تحميل التقرير كملف</button>
           <button type="button" id="mz-print-week-report">🖨️ طباعة / حفظ PDF</button>
@@ -132,7 +134,7 @@
       if(!appleTouchIcon){appleTouchIcon=document.createElement('link');appleTouchIcon.rel='apple-touch-icon';appleTouchIcon.href='icon-512.png';document.head.appendChild(appleTouchIcon)}
       var themeMeta=document.querySelector('meta[name="theme-color"]');
       if(!themeMeta){themeMeta=document.createElement('meta');themeMeta.name='theme-color';document.head.appendChild(themeMeta)}
-      themeMeta.content='#0c2749';
+      themeMeta.content='#168a58';
       document.title='Mazen OS';
       var viewportMeta=document.querySelector('meta[name="viewport"]');
       if(!viewportMeta){viewportMeta=document.createElement('meta');viewportMeta.name='viewport';document.head.appendChild(viewportMeta)}
@@ -143,68 +145,30 @@
       var sundayHabits=[
         ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
         ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
+        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل','13:30 – 14:30'],
         ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العودة من العمل','15:00 – 16:30'],
-        ['الدراسة الأكاديمية','وقت مذاكرة مركز للماجستير والمتطلبات الأكاديمية','16:30 – 18:30'],
+        ['حل واستكمال الواجبات الجامعية','Assignments / Discussions / Critical Thinking والتسليم','16:30 – 18:30'],
         ['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
         ['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','20:30 – 21:30'],
-        ['وقت خاص','وقت شخصي مرن للاسترخاء أو الاهتمامات الخاصة','21:30 – 22:30'],
-        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
+        ['وقت خاص','وقت شخصي مرن للاسترخاء','21:30 – 22:30'],
+        ['تصفح الكتب','قراءة خفيفة قبل النوم','22:30 – 23:00'],
         ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
-
-      var mondayHabits=sundayHabits.map(function(h){return h.slice()});
-
+      var mondayHabits=[
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل','13:30 – 14:30'],['وقت العائلة والغداء','وقت للعائلة والغداء','15:00 – 16:30'],['التحضير للمحاضرات','قراءة مسبقة + مفاهيم + أسئلة ونقاط تحتاج فهمًا','16:30 – 18:30'],['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','20:30 – 21:30'],['وقت خاص','وقت شخصي مرن','21:30 – 22:30'],['تصفح الكتب','قراءة خفيفة قبل النوم','22:30 – 23:00'],['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+      ];
       var tuesdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
-        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
-        ['وقت تنقل بين المهام','فترة انتقال بعد العمل للاستعداد لبقية أنشطة اليوم','15:00 – 16:00'],
-        ['الرياضة','تمرين اليوم حسب الخطة','16:00 – 17:00'],
-        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد التمرين','17:00 – 18:30'],
-        ['محاضرة المالية','حضور محاضرة مادة المالية والتركيز على محتوى المحاضرة','19:00 – 20:45'],
-        ['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','21:00 – 22:30'],
-        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل','13:30 – 14:30'],['وقت تنقل بين المهام','فترة انتقال بعد العمل','15:00 – 16:00'],['الرياضة','تمرين اليوم حسب الخطة','16:00 – 17:30'],['وقت العائلة والغداء','وقت للعائلة والغداء بعد التمرين','17:30 – 18:30'],['محاضرة المالية','Principles of Finance — المحاضرة + تسجيل الملاحظات','19:00 – 20:45'],['وقت العائلة المسائي','العشاء ووقت هادئ مع العائلة','21:00 – 22:30'],['تصفح الكتب','قراءة خفيفة قبل النوم','22:30 – 23:00'],['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
-
       var wednesdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
-        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
-        ['وقت تنقل بين المهام','فترة انتقال بعد العمل والاستعداد للمحاضرات','15:00 – 16:00'],
-        ['المحاضرات','وقت المحاضرات الأكاديمية المسائية','16:00 – 21:45'],
-        ['وقت العائلة والعشاء','العشاء ووقت هادئ مع العائلة بعد المحاضرات','21:45 – 23:00'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل','13:30 – 14:30'],['وقت تنقل بين المهام','فترة انتقال والاستعداد للمحاضرات','15:00 – 16:00'],['المحاضرات','المحاضرات الثلاث + تسجيل الملاحظات والأسئلة','16:00 – 21:45'],['وقت العائلة والعشاء','العشاء ووقت هادئ مع العائلة','21:45 – 23:00'],['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
-
       var thursdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],
-        ['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],
-        ['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل لتعلم أداة أو مفهوم وتطبيقه عمليًا','13:30 – 14:30'],
-        ['وقت العائلة والغداء','وقت للعائلة والغداء بعد العودة من العمل','15:00 – 17:00'],
-        ['🌿 مساء الخميس المفتوح','مساء مرن للراحة أو الخروج أو الوقت العائلي والاجتماعي دون التزامات إضافية','17:00 – 23:00'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+        ['الاستيقاظ والصلاة والفطور','بداية اليوم بهدوء والصلاة والفطور والاستعداد','07:00 – 08:00'],['العمل','الأولويات المهنية خلال يوم العمل','08:00 – 15:00'],['جلسة التطوير: الذكاء الاصطناعي','ساعة تطوير مركزة داخل وقت العمل','13:30 – 14:30'],['وقت العائلة والغداء','وقت للعائلة والغداء','15:00 – 17:00'],['المراجعة والإغلاق الأكاديمي','Review / Active Recall / Quiz / تقييم الفهم','17:00 – 18:30'],['وقت مفتوح / الاستعداد للتمرين','فترة انتقال واستعداد للرياضة','18:30 – 19:00'],['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],['مساء الخميس المفتوح','وقت مفتوح للراحة أو العائلة','20:30 – 23:00'],['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
-
-      var fridayHabits=[
-        ['🕌 صلاة الجمعة وقراءة سورة الكهف','وقت للعبادة وصلاة الجمعة وقراءة سورة الكهف','12:00 – 13:30'],
-        ['❤️ وقت العائلة','وقت عائلي ممتد للغداء والخروج والأنشطة المشتركة','13:30 – 19:00'],
-        ['🌿 وقت شخصي واجتماعي','وقت مرن للراحة أو التواصل الاجتماعي','19:00 – 20:00'],
-        ['📊 تقويم الأسبوع','مراجعة الأسبوع: الإنجازات والتحديات والتعديل الأهم للأسبوع القادم','20:00 – 20:30'],
-        ['👥 مساء الجمعة المفتوح','وقت مفتوح للعائلة أو الأصدقاء والراحة','20:30 – 23:00'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
-      ];
-
+      var fridayHabits=[];
       var saturdayHabits=[
-        ['الاستيقاظ والصلاة والفطور','بداية هادئة ليوم السبت والصلاة والفطور','07:00 – 08:00'],
-        ['🧭 تحديث Mazen OS','مراجعة التطبيق وتحديثه وتسجيل ملاحظات وتحسينات الأسبوع القادم','10:00 – 12:00'],
-        ['❤️ وقت العائلة','وقت مفتوح مع العائلة للغداء أو الخروج أو الأنشطة المشتركة','12:00 – 16:00'],
-        ['🎯 تحضير IELTS','جلسة مركزة لتدريب IELTS مع مراجعة الأخطاء','17:00 – 18:30'],
-        ['🏃 الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],
-        ['🇬🇧 British Council','جلسة تعلم اللغة الإنجليزية عبر British Council','21:00 – 22:00'],
-        ['تصفح الكتب','تصفح وقراءة خفيفة للكتب قبل النوم','22:30 – 23:00'],
-        ['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
+        ['الاستيقاظ والصلاة والفطور','بداية هادئة ليوم السبت','07:00 – 08:00'],['تحديث Mazen OS','مراجعة التطبيق وتحديثه وتخطيط الواجبات','10:00 – 12:00'],['وقت العائلة','وقت مفتوح مع العائلة','12:00 – 16:00'],['حل الواجبات الجامعية','Assignments / Discussions / Critical Thinking','17:00 – 18:30'],['الرياضة','تمرين اليوم حسب الخطة','19:00 – 20:30'],['وقت العائلة المسائي','وقت عائلي مسائي','20:30 – 22:30'],['تصفح الكتب','قراءة خفيفة قبل النوم','22:30 – 23:00'],['الاستعداد للنوم','تهدئة اليوم والاستعداد للنوم','23:00 – 23:30']
       ];
 
       function habitsForDate(now){
@@ -241,6 +205,11 @@
         el('mz-date').textContent=names[selectedDate.getDay()]+'، '+selectedDate.getDate()+'/'+(selectedDate.getMonth()+1);el('mz-greeting').textContent='خطة يوم '+names[selectedDate.getDay()];
         el('mz-current-task').textContent=habits.length?habits[0][0]:'—';el('mz-next-task').textContent=habits.length>1?habits[1][0]+' • '+habits[1][2]:'—';renderHabits();refreshProgress();el('mz-life-tab').click();
       }
+      var mainTargets={work:{label:'💼 العمل',target:35},sport:{label:'🏃 الرياضة',target:7.5},family:{label:'❤️ العائلة',target:16.75},ai:{label:'🤖 الذكاء الاصطناعي',target:5},study:{label:'🎓 المذاكرة',target:14.5}};
+      function habitMinutes(h){var r=habitTimeRange(h);if(!r)return 0;return r.end>=r.start?r.end-r.start:(1440-r.start+r.end)}
+      function mainCategory(title){title=String(title||'');if(title.indexOf('العمل')>=0)return 'work';if(title.indexOf('الرياضة')>=0)return 'sport';if(title.indexOf('العائلة')>=0||title.indexOf('العشاء')>=0)return 'family';if(title.indexOf('الذكاء الاصطناعي')>=0)return 'ai';if(title.indexOf('الواجبات')>=0||title.indexOf('التحضير للمحاضرات')>=0||title.indexOf('محاضرة المالية')>=0||title.indexOf('المحاضرات')>=0||title.indexOf('المراجعة والإغلاق الأكاديمي')>=0)return 'study';return null}
+      function weeklyHoursData(){var start=weekStartSaturday(new Date());var totals={work:0,sport:0,family:0,ai:0,study:0};for(var d=0;d<7;d++){var date=new Date(start);date.setDate(start.getDate()+d);var data=savedHabitsForDate(date);data.habits.forEach(function(h,i){var c=mainCategory(h[0]);if(c&&data.state[i])totals[c]+=habitMinutes(h)/60})}var target=0,done=0;Object.keys(mainTargets).forEach(function(k){target+=mainTargets[k].target;done+=Math.min(totals[k],mainTargets[k].target)});return {totals:totals,target:target,done:done,score:target?Math.round(done/target*100):0}}
+      function renderHoursReport(){var data=weeklyHoursData(),box=el('mz-hours-report');if(!box)return;box.innerHTML='';Object.keys(mainTargets).forEach(function(k){var t=mainTargets[k],done=data.totals[k],pct=Math.min(100,Math.round(done/t.target*100));var row=document.createElement('div');row.className='mz-hours-row';row.innerHTML='<strong>'+t.label+'</strong><div class="mz-hours-track"><span style="width:'+pct+'%"></span></div><small>'+done.toFixed(done%1?1:0)+' / '+t.target+' س • '+pct+'%</small>';box.appendChild(row)});if(el('mz-report-score'))el('mz-report-score').textContent=data.score+'%';if(el('mz-report-completed'))el('mz-report-completed').textContent=data.done.toFixed(1)+' / '+data.target.toFixed(1)+' س'}
       function weeklyPerformanceData(){
         var labels=['السبت','الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
         var start=weekStartSaturday(new Date());var end=new Date(start);end.setDate(start.getDate()+6);
@@ -275,10 +244,7 @@
         var best=week.days.slice().sort(function(a,b){return b.percent-a.percent})[0];
         var low=week.days.slice().sort(function(a,b){return a.percent-b.percent})[0];
         if(el('mz-report-range')){el('mz-report-range').textContent='الفترة: '+formatGregorianDate(week.start)+' – '+formatGregorianDate(week.end)}
-        if(el('mz-report-score')){el('mz-report-score').textContent=week.score+'%'}
-        if(el('mz-report-completed')){el('mz-report-completed').textContent=week.completed+' / '+week.total}
-        if(el('mz-report-best')){el('mz-report-best').textContent=best?best.label+' • '+best.percent+'%':'—'}
-        if(el('mz-report-low')){el('mz-report-low').textContent=low?low.label+' • '+low.percent+'%':'—'}
+        renderHoursReport();
       }
       var todayKey=localDateKey(new Date());
       var storageKey='mazenOSProgressV2:'+todayKey;
@@ -444,13 +410,13 @@
       }
       function renderHabits(){
         var box=el('mz-habits');box.innerHTML='';var done=0;
-        var isReadOnlyPast=localDateKey(selectedDashboardDate)<localDateKey(new Date());
+        var today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());var yesterday=new Date(today);yesterday.setDate(today.getDate()-1);var selectedKey=localDateKey(selectedDashboardDate);var isReadOnlyPast=selectedKey<localDateKey(yesterday);var isReadOnlyFuture=selectedKey>localDateKey(today);
         habits.forEach(function(h,index){
           var expired=isHabitExpired(h,index)&&!habitState[index];var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'')+(expired?' mz-expired':'');
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
-          if(isReadOnlyPast){check.disabled=true;check.title='يمكن الاطلاع على الأيام السابقة دون تعديل'}
+          if(isReadOnlyPast||isReadOnlyFuture){check.disabled=true;check.title=isReadOnlyFuture?'يمكن تعديل اليوم الحالي أو يوم أمس فقط':'يمكن تعديل يوم أمس فقط بعد انقضاء اليوم'}
           check.addEventListener('change',function(){
             habitState[index]=check.checked;
             saveState();
@@ -464,10 +430,11 @@
       }
 
       function weeklyReportHtml(){
-        var week=weeklyPerformanceData();var best=week.days.slice().sort(function(a,b){return b.percent-a.percent})[0];var low=week.days.slice().sort(function(a,b){return a.percent-b.percent})[0];
-        var rows=week.days.map(function(day){return '<tr><td>'+day.label+'</td><td>'+day.completed+' / '+day.total+'</td><td>'+day.percent+'%</td></tr>'}).join('');
-        return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mazen OS Weekly Report</title><style>body{font-family:Arial,sans-serif;background:#f6f2ea;color:#172033;margin:0;padding:28px}.report{max-width:760px;margin:auto;background:#fff;border-radius:20px;padding:28px;border:1px solid #e2e4e9}.brand{font-size:28px;font-weight:800;color:#173a63}.sub{color:#657083;margin:6px 0 22px}.score{font-size:44px;font-weight:900;color:#173a63;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.box{background:#fbfbfc;border:1px solid #e8eaf0;border-radius:14px;padding:14px}.box small{display:block;color:#657083;margin-bottom:5px}.box strong{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{padding:11px;border-bottom:1px solid #e8eaf0;text-align:right}th{background:#f7f9fc}@media print{body{background:#fff;padding:0}.report{border:0}}</style></head><body><div class="report"><div class="brand">Mazen OS</div><div class="sub">التقرير الأسبوعي • '+formatGregorianDate(week.start)+' – '+formatGregorianDate(week.end)+'</div><div>مؤشر الأداء الأسبوعي</div><div class="score">'+week.score+'%</div><div class="grid"><div class="box"><small>الفترات المكتملة</small><strong>'+week.completed+' / '+week.total+'</strong></div><div class="box"><small>أفضل يوم</small><strong>'+(best?best.label+' • '+best.percent+'%':'—')+'</strong></div><div class="box"><small>يحتاج تركيزًا أكبر</small><strong>'+(low?low.label+' • '+low.percent+'%':'—')+'</strong></div><div class="box"><small>أساس المؤشر</small><strong>الفترات الزمنية المكتملة</strong></div></div><table><thead><tr><th>اليوم</th><th>الإنجاز</th><th>النسبة</th></tr></thead><tbody>'+rows+'</tbody></table></div></body></html>';
+        var week=weeklyPerformanceData(),hours=weeklyHoursData();
+        var rows=Object.keys(mainTargets).map(function(k){var t=mainTargets[k],done=hours.totals[k],pct=Math.min(100,Math.round(done/t.target*100));return '<tr><td>'+t.label+'</td><td>'+done.toFixed(done%1?1:0)+' س</td><td>'+t.target+' س</td><td>'+pct+'%</td></tr>'}).join('');
+        return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mazen OS Weekly Report</title><style>body{font-family:Arial,sans-serif;background:#f3f8f4;color:#173126;margin:0;padding:28px}.report{max-width:760px;margin:auto;background:#fff;border-radius:20px;padding:28px;border:1px solid #dfe9e2}.brand{font-size:28px;font-weight:800;color:#168a58}.sub{color:#65756c;margin:6px 0 22px}.score{font-size:44px;font-weight:900;color:#168a58;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.box{background:#f8fcf9;border:1px solid #e0ebe3;border-radius:14px;padding:14px}.box small{display:block;color:#65756c;margin-bottom:5px}.box strong{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:18px}th,td{padding:11px;border-bottom:1px solid #e1e9e3;text-align:right}th{background:#eef8f1}@media print{body{background:#fff;padding:0}.report{border:0}}</style></head><body><div class="report"><div class="brand">Mazen OS</div><div class="sub">التقرير الأسبوعي • '+formatGregorianDate(week.start)+' – '+formatGregorianDate(week.end)+'</div><div>مؤشر إنجاز الساعات الرئيسية</div><div class="score">'+hours.score+'%</div><div class="grid"><div class="box"><small>الساعات المكتملة</small><strong>'+hours.done.toFixed(1)+' س</strong></div><div class="box"><small>الساعات المستهدفة</small><strong>'+hours.target.toFixed(1)+' س</strong></div></div><table><thead><tr><th>المجال</th><th>المكتمل</th><th>المستهدف</th><th>الإنجاز</th></tr></thead><tbody>'+rows+'</tbody></table></div></body></html>';
       }
+
       function downloadWeeklyReport(){
         var week=weeklyPerformanceData();var blob=new Blob([weeklyReportHtml()],{type:'text/html;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');
         a.href=url;a.download='Mazen-OS-Weekly-Report-'+localDateKey(week.start)+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1500);
