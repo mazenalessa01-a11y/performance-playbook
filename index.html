@@ -410,13 +410,13 @@
       }
       function renderHabits(){
         var box=el('mz-habits');box.innerHTML='';var done=0;
-        var today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());var yesterday=new Date(today);yesterday.setDate(today.getDate()-1);var selectedKey=localDateKey(selectedDashboardDate);var isReadOnlyPast=selectedKey<localDateKey(yesterday);var isReadOnlyFuture=selectedKey>localDateKey(today);
+        var today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());var selectedKey=localDateKey(selectedDashboardDate);var isReadOnlyFuture=selectedKey>localDateKey(today);
         habits.forEach(function(h,index){
           var expired=isHabitExpired(h,index)&&!habitState[index];var row=document.createElement('div');row.className='mz-row'+(index===currentHabit?' mz-current':'')+(expired?' mz-expired':'');
           var check=document.createElement('input');check.type='checkbox';check.checked=habitState[index];
           var label=document.createElement('label');label.innerHTML='<strong>'+h[0]+'</strong><small>'+h[1]+'</small>';if(check.checked){label.className='mz-done';done++}
           var time=document.createElement('time');var timeParts=h[2].split(' – ');time.innerHTML='<span dir="ltr">'+timeParts[0]+'</span> – <span dir="ltr">'+timeParts[1]+'</span>';time.setAttribute('aria-label',timeParts[0]+' إلى '+timeParts[1]);
-          if(isReadOnlyPast||isReadOnlyFuture){check.disabled=true;check.title=isReadOnlyFuture?'يمكن تعديل اليوم الحالي أو يوم أمس فقط':'يمكن تعديل يوم أمس فقط بعد انقضاء اليوم'}
+          if(isReadOnlyFuture){check.disabled=true;check.title='لا يمكن تسجيل الإنجاز للأيام المستقبلية'}
           check.addEventListener('change',function(){
             habitState[index]=check.checked;
             saveState();
